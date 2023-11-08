@@ -23,5 +23,11 @@ namespace Astakona
         {
             InitializeComponent();
         }
+        private void HomePageButton_Click(object sender, RoutedEventArgs e)
+        {
+            Dashboard Dashboard = new Dashboard();
+            this.Close();
+            Dashboard.Show();
+        }
     }
 }

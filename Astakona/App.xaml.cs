@@ -13,5 +13,17 @@ namespace Astakona
     /// </summary>
     public partial class App : Application
     {
+        public LoggedInDetails LoggedInUser { get; set; }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            LoggedInUser = new LoggedInDetails();
+        }
+
+        public void ClearLoggedInUserData()
+        {
+            LoggedInUser = new LoggedInDetails();
+        }
     }
 }

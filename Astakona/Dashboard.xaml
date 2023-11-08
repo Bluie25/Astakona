@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Astakona"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Astakona" Height="450" Width="800"
+        Title="Astakona" Height="1080" Width="1920"
         WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
@@ -22,31 +23,45 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Row="0" Grid.Column="0">
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"><Bold>Welcome Astakona</Bold></TextBlock>
+            <TextBlock  Text="{Binding Source={x:Static local:App.Current}, Path=LoggedInUser.EmployeeUsername, StringFormat=Welcome {0}}" 
+                        HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10 0 0 0"
+                        FontWeight="Bold" FontSize="25"/>
         </Grid>
-        
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="2">
+            <Button Content="Log Out" FontWeight="Bold" Height="30" Width="200" HorizontalAlignment="Right" Margin="0 0 30 0" Click="LogoutButton_Click"/>
+            <TextBlock FontWeight="Bold" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 250 0">
+                <TextBlock.Text>
+                    <Binding Source="{x:Static sys:DateTime.Now}" StringFormat=" {0:dd MMM yyyy}, {0:HH:mm tt}" />
+                </TextBlock.Text>
+            </TextBlock>
+        </Grid>
 
         <Grid Grid.Row="1" Grid.Column="0">
             <Button Click="OrderButtonClick">
-                <Image Source="OrderButton.jpg"/>
+                <Image Source="/OrderButton.jpg"/>
             </Button>
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="1">
             <Button>
-                <Image Source="InventoryButton.png"/>
+                <Image Source="/InventoryButton.png"/>
             </Button>
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="2">
             <Button>
-                <Image Source="SalaryButton.png"/>
+                <Image Source="/SalaryButton.png"/>
             </Button>
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="0">
             <Button>
-                <Image Source="ManufactureHistoryButton.png"/>
+                <Image Source="/ManufactureHistoryButton.png"/>
             </Button>
         </Grid>
         

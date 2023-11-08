@@ -4,18 +4,37 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Astakona"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Order Page" Height="450" Width="800"
+        Title="Order Page" Height="1080" Width="1920"
         WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="40"></Grid>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="500"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            
+            <Grid Grid.Column="0">
+                <TextBlock Text="Order List" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10 0 0 0" FontWeight="Bold" FontSize="25"/>
+            </Grid>
 
+            <Grid Grid.Column="1">
+                <Button Content="Home Page" FontWeight="Bold" Height="30" Width="200" HorizontalAlignment="Right" Margin="0 0 30 0" Click="HomePageButton_Click"/>
+                <TextBlock FontWeight="Bold" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 250 0">
+                    <TextBlock.Text>
+                        <Binding Source="{x:Static sys:DateTime.Now}" StringFormat=" {0:dd MMM yyyy}, {0:HH:mm tt}" />
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
+        </Grid>
+        
         <Grid Grid.Row="1">
             <ListView>
                 <ListView.View>
@@ -26,20 +45,18 @@
                         <GridViewColumn Header="Status HT" Width="100"/>
                         <GridViewColumn Header="Tanggal Order" Width="100"/>
                         <GridViewColumn Header="Customer" Width="100"/>
+                        <GridViewColumn Header="Pemakaian Paku 2 Inci" Width="100"/>
+                        <GridViewColumn Header="Pemakaian Paky 2 1/2 Inci" Width="100"/>
+
                         <GridViewColumn Header="Cancel Order" Width="100"/>
                     </GridView>
                 </ListView.View>
             </ListView>
         </Grid>
 
-
-        <Grid Grid.Row="2" Height="100">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="200" />
-            </Grid.ColumnDefinitions>
-            <Button Width="100" Height="50" Grid.Column="1" Content="Add Order" HorizontalAlignment="Center"/>
-
+        <Grid Grid.Row="2">
+            <Button Content="Add Order" Width="150" Height="50" HorizontalAlignment="Right" Margin="0 0 40 0" FontWeight="Bold"/>
         </Grid>
+
     </Grid>
 </Window>
