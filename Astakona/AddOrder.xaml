@@ -1,0 +1,77 @@
+﻿<Window x:Class="Astakona.AddOrder"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:local="clr-namespace:Astakona"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="480"
+      Title="Add Order" Height="600" Width="480">
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="150"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Label HorizontalAlignment="Right" VerticalAlignment="Center" Content="Nama Barang: "/>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            <ComboBox x:Name="ComboBox" Height="20" Width="230" SelectionChanged="ComboBox_SelectionChanged"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Label HorizontalAlignment="Right" VerticalAlignment="Center">Jumlah Barang:</Label>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <TextBox x:Name="AmountTB" Height="20" Width="230" Text="0" TextChanged="AmountTB_TextChanged" PreviewTextInput="AmountTB_PreviewTextInput"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center"> Paku 2 1/2 Inci</Label>
+            <TextBox x:Name="BigScrewTB" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="120" Margin="0 0 20 0" IsReadOnly="True"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center">Paku 2 Inci</Label>
+            <TextBox x:Name="SmallScrewTB" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="120" Margin="0 0 20 0" IsReadOnly="True"/>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Label HorizontalAlignment="Right" VerticalAlignment="Center">Customer: </Label>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="1">
+            <TextBox x:Name="CustomerTB" Height="20" Width="230"></TextBox>
+        </Grid>
+
+        <Grid Grid.Row="4" Grid.Column="0">
+            <Label HorizontalAlignment="Right" Margin="0 20 0 0">Tanggal: </Label>
+        </Grid>
+
+        <Grid Grid.Row="4" Grid.Column="1">
+            <Calendar x:Name="OrderDate" HorizontalAlignment="Left" Margin="10 20 0 0" SelectedDate="{x:Static sys:DateTime.Now}" />
+        </Grid>
+
+        <Grid Grid.Row="5" Grid.Column="0">
+            <Button Content="Cancel" Width="150" Height="80" HorizontalAlignment="Center" FontWeight="Bold" Click="CancelButton_Clicked"/>
+        </Grid>
+
+        <Grid Grid.Row="5" Grid.Column="1">
+            <Button Content="Add" Width="150" Height="80" HorizontalAlignment="Center" FontWeight="Bold" Click="AddButton_Clicked"/>
+        </Grid>
+    </Grid>
+</Window>

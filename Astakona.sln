@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Astakona", "Astakona\Astakona.csproj", "{DEECE06C-3284-4D05-B210-2A2C8A073E9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hub", "Hub\Hub.csproj", "{92B0EA55-D838-4A88-8113-BE0C54DFBCB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{DEECE06C-3284-4D05-B210-2A2C8A073E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEECE06C-3284-4D05-B210-2A2C8A073E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEECE06C-3284-4D05-B210-2A2C8A073E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92B0EA55-D838-4A88-8113-BE0C54DFBCB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92B0EA55-D838-4A88-8113-BE0C54DFBCB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92B0EA55-D838-4A88-8113-BE0C54DFBCB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92B0EA55-D838-4A88-8113-BE0C54DFBCB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

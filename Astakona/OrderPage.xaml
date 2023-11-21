@@ -34,28 +34,33 @@
                 </TextBlock>
             </Grid>
         </Grid>
-        
+
         <Grid Grid.Row="1">
-            <ListView>
+            <ListView ItemsSource="{Binding Orders}">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Nama Barang" Width="300" />
-                        <GridViewColumn Header="Jumlah Orderan" Width="100" />
-                        <GridViewColumn Header="Terselesaikan" Width="100" />
-                        <GridViewColumn Header="Status HT" Width="100"/>
-                        <GridViewColumn Header="Tanggal Order" Width="100"/>
-                        <GridViewColumn Header="Customer" Width="100"/>
-                        <GridViewColumn Header="Pemakaian Paku 2 Inci" Width="100"/>
-                        <GridViewColumn Header="Pemakaian Paky 2 1/2 Inci" Width="100"/>
-
-                        <GridViewColumn Header="Cancel Order" Width="100"/>
+                        <GridViewColumn Header="Nama Barang" Width="300" DisplayMemberBinding="{Binding InventoryName}" />
+                        <GridViewColumn Header="Jumlah Orderan" Width="150" DisplayMemberBinding="{Binding Amount}" />
+                        <GridViewColumn Header="Pemakaian Paku 2 1/2 Inci" Width="150" DisplayMemberBinding="{Binding BigScrew}" />
+                        <GridViewColumn Header="Pemakaian Paku 2 Inci" Width="150" DisplayMemberBinding="{Binding SmallScrew}" />
+                        <GridViewColumn Header="Jumlah Terproduksi" Width="150" DisplayMemberBinding="{Binding ProductionCompleted}" />
+                        <GridViewColumn Header="Jumlah HT" Width="150" DisplayMemberBinding="{Binding HeatCompleted}" />
+                        <GridViewColumn Header="Tanggal Order" Width="100" DisplayMemberBinding="{Binding Date}" />
+                        <GridViewColumn Header="Customer" Width="100" DisplayMemberBinding="{Binding Customer}" />
+                        <GridViewColumn Header="Update Order" Width="100" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Update"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>
         </Grid>
 
         <Grid Grid.Row="2">
-            <Button Content="Add Order" Width="150" Height="50" HorizontalAlignment="Right" Margin="0 0 40 0" FontWeight="Bold"/>
+            <Button Content="Add Order" Width="150" Height="50" HorizontalAlignment="Right" Margin="0 0 40 0" FontWeight="Bold" Click="AddOrderButton_Click"/>
         </Grid>
 
     </Grid>
