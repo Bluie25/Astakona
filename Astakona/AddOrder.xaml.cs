@@ -15,9 +15,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Collections;
+using Microsoft.AspNetCore.SignalR.Client;
+
 
 namespace Astakona
 {
@@ -29,12 +30,19 @@ namespace Astakona
         public double SelectedBigScrew;
         public double SelectedSmallScrew;
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+        private HubConnection _hubConnection;
         public AddOrder()
         {
             InitializeComponent();
             LoadProducts();
+            InitializeSignalR();
         }
 
+        private async void InitializeSignalR()
+        {
+            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost/ConnectionHubs/OrderHub").Build();
+            await _hubConnection.StartAsync();
+        }
         private void LoadProducts()
         {
             using (SqlConnection conn = new SqlConnection(this.connection))
@@ -128,10 +136,11 @@ namespace Astakona
                 return false; 
             }
         }
+   
 
-        private void AddButton_Clicked(object sender, RoutedEventArgs e)
+        private async void AddButton_Clicked(object sender, RoutedEventArgs e)
         {
-            if(ValidateInputs())
+            if (ValidateInputs())
             {
                 DataRowView SelectedInventory = (DataRowView)ComboBox.SelectedItem;
                 int SelectedInventoryID = (int)SelectedInventory["InventoryID"];
@@ -157,7 +166,7 @@ namespace Astakona
 
                         if (rowsAffected > 0)
                         {
-                            MessageBox.Show("Order successfully added!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await _hubConnection.InvokeAsync("SendOrderUpdate");
                             conn.Close();
                             this.Close();
                         }
@@ -170,7 +179,7 @@ namespace Astakona
                 }
             }
         }
-
+          
         private void CancelButton_Clicked(object sender, RoutedEventArgs e)
         {
             this.Close();

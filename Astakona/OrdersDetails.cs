@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Astakona
 {
+    [Serializable]
     public class OrdersDetails
     {
         public int OrderID { get; set; }

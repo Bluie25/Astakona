@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Configuration;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Net;
 
 namespace Astakona
 {
@@ -21,14 +23,27 @@ namespace Astakona
     /// </summary>
     public partial class OrderPage : Window
     {
+        private HubConnection _hubConnection;
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
         public List<OrdersDetails> Orders { get; set; }
+       
         public OrderPage()
         {
             InitializeComponent();
+            InitializeSignalR();
             Orders = new List<OrdersDetails>();
             LoadOrders();
             DataContext = this;
+        }
+
+        private async void InitializeSignalR()
+        {
+            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost/ConnectionHubs/OrderHub").Build();
+            _hubConnection.On("ReceiveOrderUpdate", () =>
+            {
+                LoadOrders();
+            });
+            await _hubConnection.StartAsync();
         }
 
         public void LoadOrders()
