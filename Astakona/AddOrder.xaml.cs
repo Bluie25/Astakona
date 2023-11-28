@@ -18,6 +18,7 @@ using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Collections;
 using Microsoft.AspNetCore.SignalR.Client;
+using System.Diagnostics;
 
 
 namespace Astakona
@@ -40,7 +41,7 @@ namespace Astakona
 
         private async void InitializeSignalR()
         {
-            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost/ConnectionHubs/OrderHub").Build();
+            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:5210/OrderHub").Build();
             await _hubConnection.StartAsync();
         }
         private void LoadProducts()
@@ -165,7 +166,7 @@ namespace Astakona
                         int rowsAffected = query.ExecuteNonQuery();
 
                         if (rowsAffected > 0)
-                        {
+                        { 
                             await _hubConnection.InvokeAsync("SendOrderUpdate");
                             conn.Close();
                             this.Close();

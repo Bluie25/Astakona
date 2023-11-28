@@ -15,6 +15,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Net;
+using System.Diagnostics;
 
 namespace Astakona
 {
@@ -38,7 +39,7 @@ namespace Astakona
 
         private async void InitializeSignalR()
         {
-            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost/ConnectionHubs/OrderHub").Build();
+            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:5210/OrderHub").Build();
             _hubConnection.On("ReceiveOrderUpdate", () =>
             {
                 LoadOrders();
