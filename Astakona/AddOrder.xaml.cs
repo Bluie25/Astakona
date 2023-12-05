@@ -41,7 +41,10 @@ namespace Astakona
 
         private async void InitializeSignalR()
         {
-            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:5210/OrderHub").Build();
+            _hubConnection = new HubConnectionBuilder()
+                 .WithUrl("https://localhost:7155/OrderHub")
+                 .Build();
+
             await _hubConnection.StartAsync();
         }
         private void LoadProducts()

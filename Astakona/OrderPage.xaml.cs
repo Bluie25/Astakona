@@ -22,6 +22,7 @@ namespace Astakona
     /// <summary>
     /// Interaction logic for OrderPage.xaml
     /// </summary>
+    /// </summary>
     public partial class OrderPage : Window
     {
         private HubConnection _hubConnection;
@@ -39,13 +40,21 @@ namespace Astakona
 
         private async void InitializeSignalR()
         {
-            _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:5210/OrderHub").Build();
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl("https://localhost:7155/OrderHub")
+                .Build();
+
+            await _hubConnection.StartAsync();
+
             _hubConnection.On("ReceiveOrderUpdate", () =>
             {
-                LoadOrders();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LoadOrders();
+                });
             });
-            await _hubConnection.StartAsync();
         }
+    
 
         public void LoadOrders()
         {
@@ -56,6 +65,7 @@ namespace Astakona
                     conn.Open();
                     SqlCommand query = new SqlCommand("SELECT * FROM Orders", conn);
                     SqlDataReader reader = query.ExecuteReader();
+                    Orders.Clear();
 
                     while (reader.Read())
                     {
@@ -73,6 +83,7 @@ namespace Astakona
                             Customer = Convert.ToString(reader["Customer"]),
                         });  
                     }
+                    CollectionViewSource.GetDefaultView(Orders).Refresh();
                 }
             }
             catch (Exception ex)
@@ -80,9 +91,14 @@ namespace Astakona
                 MessageBox.Show($"Error loading orders: {ex.Message}\n{ex.StackTrace}");
             }
         }
+
         private void HomePageButton_Click(object sender, RoutedEventArgs e)
         {
             Dashboard Dashboard = new Dashboard();
+            if (_hubConnection != null)
+            {
+                _hubConnection.StopAsync();
+            }
             this.Close();
             Dashboard.Show();
         }
