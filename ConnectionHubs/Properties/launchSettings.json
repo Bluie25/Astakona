@@ -3,12 +3,12 @@
     "ConnectionHubs": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5210",
+      "launchUrl": "http://192.168.1.25:5210",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7155;http://localhost:5210"
+      "applicationUrl": "https://192.168.1.25:7155;http://192.168.1.25:5210"
     },
     "IIS Express": {
       "commandName": "IISExpress",

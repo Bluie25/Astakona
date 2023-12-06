@@ -41,9 +41,10 @@ namespace Astakona
         private async void InitializeSignalR()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:7155/OrderHub")
+                .WithUrl("http://192.168.1.25:5210/OrderHub")
                 .Build();
 
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             await _hubConnection.StartAsync();
 
             _hubConnection.On("ReceiveOrderUpdate", () =>
