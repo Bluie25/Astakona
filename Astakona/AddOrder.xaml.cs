@@ -42,7 +42,7 @@ namespace Astakona
         private async void InitializeSignalR()
         {
             _hubConnection = new HubConnectionBuilder()
-                 .WithUrl("http://192.168.1.25:5210/OrderHub")
+                 .WithUrl("http://192.168.1.3:5210/OrderHub")
                  .Build();
 
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
