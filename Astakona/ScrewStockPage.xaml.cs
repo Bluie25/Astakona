@@ -68,7 +68,7 @@ namespace Astakona
                         switch (Convert.ToInt32(reader["ScrewID"]))
                         {
                             case 1:
-                                BidScrewTB.Text = Convert.ToString(reader["Stock"]);
+                                BigScrewTB.Text = Convert.ToString(reader["Stock"]);
                                 break;
                             case 2:
                                 SmallScrewTB.Text = Convert.ToString(reader["Stock"]);

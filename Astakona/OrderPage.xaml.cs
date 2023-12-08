@@ -34,7 +34,7 @@ namespace Astakona
             InitializeComponent();
             InitializeSignalR();
             Orders = new List<OrdersDetails>();
-            LoadOrders();
+            LoadPage();
             DataContext = this;
         }
 
@@ -51,7 +51,7 @@ namespace Astakona
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    LoadOrders();
+                    LoadPage();
                 });
             });
 
@@ -59,7 +59,7 @@ namespace Astakona
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    LoadOrders();
+                    LoadPage();
                 });
             });
 
@@ -67,40 +67,77 @@ namespace Astakona
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    LoadOrders();
+                    LoadPage();
                 });
             });
 
+            _hubConnection.On("ReceiveScrewUpdate", () =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LoadPage();
+                });
+            });
         }
 
-        public void LoadOrders()
+        public void LoadPage()
         {
             try
             {
-                using(SqlConnection conn = new SqlConnection(connection))
+                using (SqlConnection conn = new SqlConnection(connection))
                 {
                     conn.Open();
-                    SqlCommand query = new SqlCommand("SELECT * FROM Orders", conn);
-                    SqlDataReader reader = query.ExecuteReader();
-                    Orders.Clear();
 
-                    while (reader.Read())
+                    using (SqlTransaction transaction = conn.BeginTransaction())
                     {
-                        this.Orders.Add(new OrdersDetails()
+                        try
                         {
-                            OrderID = Convert.ToInt32(reader["OrderID"]),
-                            InventoryID = Convert.ToInt32(reader["InventoryID"]),
-                            InventoryName = Convert.ToString(reader["InventoryName"]),
-                            Amount = Convert.ToDouble(reader["Amount"]),
-                            BigScrew = Convert.ToDouble(reader["BigScrew"]),
-                            SmallScrew = Convert.ToDouble(reader["SmallScrew"]),
-                            ProductionCompleted = Convert.ToDouble(reader["ProductionCompleted"]),
-                            HeatCompleted = Convert.ToDouble(reader["HeatCompleted"]),
-                            Date = reader.GetDateTime(8),
-                            Customer = Convert.ToString(reader["Customer"]),
-                        });  
+                            SqlCommand OrdersQuery = new SqlCommand("SELECT * FROM Orders", conn, transaction);
+                            SqlDataReader OrdersReader = OrdersQuery.ExecuteReader();
+                            Orders.Clear();
+
+                            while (OrdersReader.Read())
+                            {
+                                this.Orders.Add(new OrdersDetails()
+                                {
+                                    OrderID = Convert.ToInt32(OrdersReader["OrderID"]),
+                                    InventoryID = Convert.ToInt32(OrdersReader["InventoryID"]),
+                                    InventoryName = Convert.ToString(OrdersReader["InventoryName"]),
+                                    Amount = Convert.ToDouble(OrdersReader["Amount"]),
+                                    BigScrew = Convert.ToDouble(OrdersReader["BigScrew"]),
+                                    SmallScrew = Convert.ToDouble(OrdersReader["SmallScrew"]),
+                                    ProductionCompleted = Convert.ToDouble(OrdersReader["ProductionCompleted"]),
+                                    HeatCompleted = Convert.ToDouble(OrdersReader["HeatCompleted"]),
+                                    Date = OrdersReader.GetDateTime(8),
+                                    Customer = Convert.ToString(OrdersReader["Customer"]),
+                                });
+                            }
+
+                            SqlCommand ScrewsQuery = new SqlCommand("SELECT * FROM Screws", conn, transaction);
+                            SqlDataReader ScrewsReader = ScrewsQuery.ExecuteReader();
+
+                            while (ScrewsReader.Read())
+                            {
+                               switch(Convert.ToDouble(ScrewsReader["ScrewID"]))
+                               {
+                                    case 1:
+                                        BigScrewTB.Text = Convert.ToString(ScrewsReader["Stock"]);
+                                        break;
+                                    case 2:
+                                        SmallScrewTB.Text = Convert.ToString(ScrewsReader["Stock"]);
+                                        break;
+                                }
+                            }
+
+                            transaction.Commit();
+                            CollectionViewSource.GetDefaultView(Orders).Refresh();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error during transaction: {ex.Message}\n{ex.StackTrace}");
+                            transaction.Rollback();
+                        }
                     }
-                    CollectionViewSource.GetDefaultView(Orders).Refresh();
                 }
             }
             catch (Exception ex)
