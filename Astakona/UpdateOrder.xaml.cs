@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,31 +16,31 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Configuration;
-using System.Text.RegularExpressions;
 using System.Collections;
-using Microsoft.AspNetCore.SignalR.Client;
-using System.Diagnostics;
-
+using Newtonsoft.Json.Linq;
 
 namespace Astakona
 {
     /// <summary>
-    /// Interaction logic for AddOrder.xaml
+    /// Interaction logic for UpdateOrder.xaml
     /// </summary>
-    public partial class AddOrder : Window
+    public partial class UpdateOrder : Window
     {
-        public double SelectedBigScrew;
-        public double SelectedSmallScrew;
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
         private HubConnection _hubConnection;
-        public AddOrder()
+        public OrdersDetails SelectedOrder;
+        public double SelectedBigScrew;
+        public double SelectedSmallScrew;
+        string error;
+
+        public UpdateOrder(OrdersDetails SelectedOrder)
         {
             InitializeComponent();
-            LoadProducts();
+            this.SelectedOrder = SelectedOrder;
+            LoadSelectedOrderDetails();
             InitializeSignalR();
+
         }
 
         private async void InitializeSignalR()
@@ -48,7 +52,8 @@ namespace Astakona
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             await _hubConnection.StartAsync();
         }
-        private void LoadProducts()
+
+        public void LoadSelectedOrderDetails()
         {
             using (SqlConnection conn = new SqlConnection(this.connection))
             {
@@ -63,10 +68,18 @@ namespace Astakona
                         ComboBox.ItemsSource = dataTable.DefaultView;
                         ComboBox.DisplayMemberPath = "Name";
                         ComboBox.SelectedValuePath = "InventoryID";
+                        ComboBox.SelectedValue = this.SelectedOrder.InventoryID;
                     }
-                }
+                } 
                 conn.Close();
             }
+
+            AmountTB.Text = this.SelectedOrder.Amount.ToString();
+            ProductionTB.Text = this.SelectedOrder.ProductionCompleted.ToString();
+            HTTB.Text = this.SelectedOrder.HeatCompleted.ToString();
+            CustomerTB.Text = this.SelectedOrder.Customer.ToString();
+            OrderDate.SelectedDate = this.SelectedOrder.Date;
+            OrderDate.DisplayDate = this.SelectedOrder.Date;
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -84,7 +97,7 @@ namespace Astakona
                         query.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
                         using (SqlDataReader reader = query.ExecuteReader())
                         {
-                            while(reader.Read())
+                            while (reader.Read())
                             {
                                 this.SelectedBigScrew = Convert.ToDouble(reader["BigScrew"]);
                                 this.SelectedSmallScrew = Convert.ToDouble(reader["SmallScrew"]);
@@ -102,6 +115,12 @@ namespace Astakona
             UpdateScrewValues();
         }
 
+        private void NumberTB_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
         private void UpdateScrewValues()
         {
             if (ComboBox.SelectedItem != null && !string.IsNullOrEmpty(AmountTB.Text))
@@ -112,6 +131,7 @@ namespace Astakona
                     SmallScrewTB.Text = Convert.ToString(this.SelectedSmallScrew * Convert.ToDouble(AmountTB.Text));
                 }
             }
+
             else
             {
                 if (BigScrewTB != null && SmallScrewTB != null)
@@ -122,30 +142,41 @@ namespace Astakona
             }
         }
 
-        private void AmountTB_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private bool VerifyInput()
         {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
+            StringBuilder errors = new StringBuilder();
 
-        private bool ValidateInputs()
-        {
-            if (ComboBox.SelectedItem != null && !string.IsNullOrEmpty(AmountTB.Text) && !string.IsNullOrEmpty(BigScrewTB.Text) && 
-                !string.IsNullOrEmpty(SmallScrewTB.Text) && !string.IsNullOrEmpty(CustomerTB.Text) && Convert.ToDouble(AmountTB.Text) > 0)
+            if (!double.TryParse(AmountTB.Text, out double OValue))
+                errors.AppendLine("Harap isi jumlah order! (boleh 0)\n");
+
+            if (!double.TryParse(ProductionTB.Text, out double PValue))
+                errors.AppendLine("Harap isi jumlah yang sudah di produksi! (boleh 0)\n");
+
+            if (!double.TryParse(HTTB.Text, out double HTValue))
+                errors.AppendLine("Harap isi jumlah yang sudah di HT! (boleh 0)\n");
+
+            if (string.IsNullOrEmpty(CustomerTB.Text))
+                errors.AppendLine("Nama customer tidak boleh kosong!\n");
+
+            if (PValue > OValue)
+                errors.AppendLine("Jumlah produksi melebihi jumlah order!\n");
+
+            if (HTValue > PValue)
+                errors.AppendLine("Jumlah yang sudah di HT melebihi jumlah yang sudah terproduksi!\n");
+
+            if (errors.Length > 0)
             {
-                return true;
+                this.error = "";
+                this.error += errors.ToString();
+                return false;
             }
 
-            else 
-            {
-                return false; 
-            }
+            return true;
         }
-   
 
-        private async void AddButton_Clicked(object sender, RoutedEventArgs e)
+        private async void UpdateButton_Clicked(object sender, RoutedEventArgs e)
         {
-            if (ValidateInputs())
+            if (VerifyInput())
             {
                 DataRowView SelectedInventory = (DataRowView)ComboBox.SelectedItem;
                 int SelectedInventoryID = (int)SelectedInventory["InventoryID"];
@@ -154,24 +185,33 @@ namespace Astakona
                 using (SqlConnection conn = new SqlConnection(this.connection))
                 {
                     conn.Open();
-                    using (SqlCommand query = new SqlCommand("INSERT INTO Orders (InventoryID, InventoryName, Amount, BigScrew, SmallScrew, ProductionCompleted, HeatCompleted, Date, Customer) " +
-                                                             "VALUES (@InventoryID, @InventoryName, @Amount, @BigScrew, @SmallScrew, @ProductionCompleted, @HeatCompleted, @Date, @Customer)", conn))
+                    using (SqlCommand query = new SqlCommand("UPDATE Orders SET " +
+                                                                "InventoryID=@InventoryID, " +
+                                                                "InventoryName=@InventoryName, " +
+                                                                "Amount=@Amount, " +
+                                                                "BigScrew=@BigScrew, " +
+                                                                "SmallScrew=@SmallScrew, " +
+                                                                "ProductionCompleted=@ProductionCompleted, " +
+                                                                "HeatCompleted=@HeatCompleted, " +
+                                                                "Date=@Date, " +
+                                                                "Customer=@Customer WHERE OrderID=@OrderID", conn))
                     {
                         query.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
                         query.Parameters.Add("@InventoryName", SqlDbType.NVarChar).Value = SelectedInventoryName;
                         query.Parameters.Add("@Amount", SqlDbType.Real).Value = Convert.ToDouble(AmountTB.Text);
                         query.Parameters.Add("@BigScrew", SqlDbType.Real).Value = Convert.ToDouble(BigScrewTB.Text);
                         query.Parameters.Add("@SmallScrew", SqlDbType.Real).Value = Convert.ToDouble(SmallScrewTB.Text);
-                        query.Parameters.Add("@ProductionCompleted", SqlDbType.Real).Value = 0;
-                        query.Parameters.Add("@HeatCompleted", SqlDbType.Real).Value = 0;
+                        query.Parameters.Add("@ProductionCompleted", SqlDbType.Real).Value = Convert.ToDouble(ProductionTB.Text);
+                        query.Parameters.Add("@HeatCompleted", SqlDbType.Real).Value = Convert.ToDouble(HTTB.Text);
                         query.Parameters.Add("@Date", SqlDbType.Date).Value = OrderDate.SelectedDate;
                         query.Parameters.Add("@Customer", SqlDbType.NVarChar).Value = Convert.ToString(CustomerTB.Text);
+                        query.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
 
                         int rowsAffected = query.ExecuteNonQuery();
 
                         if (rowsAffected > 0)
-                        { 
-                            await _hubConnection.InvokeAsync("SendOrderEntry");
+                        {
+                            await _hubConnection.InvokeAsync("SendOrderUpdate");
                             conn.Close();
                             this.Close();
                         }
@@ -183,8 +223,12 @@ namespace Astakona
                     }
                 }
             }
+
+            else
+                MessageBox.Show(this.error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-          
+
+
         private void CancelButton_Clicked(object sender, RoutedEventArgs e)
         {
             this.Close();

@@ -1,0 +1,38 @@
+﻿<Window x:Class="Astakona.UpdateScrewStock"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Astakona"
+        mc:Ignorable="d"
+        d:DesignHeight="280" d:DesignWidth="350"
+        Title="Update Stock Paku" Height="280" Width="350">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Label x:Name="ScrewLB" FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            <TextBox x:Name="ScrewTB" Height="20" Width="150" FontSize="15" PreviewTextInput="ScrewTB_PreviewTextInput" HorizontalAlignment="Left"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Button Content="Cancel" Width="150" Height="80" HorizontalAlignment="Center" FontWeight="Bold" Click="CancelButton_Clicked"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Button Content="Update" Width="150" Height="80" HorizontalAlignment="Center" FontWeight="Bold" Click="UpdateButton_Clicked"/>
+        </Grid>
+    </Grid>
+</Window>

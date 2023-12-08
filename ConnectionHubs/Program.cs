@@ -29,6 +29,6 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 // Map SignalR hub
-app.MapHub<OrderHub>("/OrderHub");
+app.MapHub<Hubs>("/Hubs");
 
 app.Run();

@@ -33,6 +33,13 @@ namespace Astakona
             orderPage.Show();
         }
 
+        private void ScrewStockButtonClick(object sender, RoutedEventArgs e)
+        {
+            ScrewStockPage ScrewStockPage = new ScrewStockPage();
+            this.Close();
+            ScrewStockPage.Show();
+        }
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             ((App)Application.Current).ClearLoggedInUserData();

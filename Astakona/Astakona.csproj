@@ -265,6 +265,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ScrewStockPage.xaml.cs">
+      <DependentUpon>ScrewStockPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateOrder.xaml.cs">
+      <DependentUpon>UpdateOrder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateScrewStock.xaml.cs">
+      <DependentUpon>UpdateScrewStock.xaml</DependentUpon>
+    </Compile>
     <Page Include="AddOrder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -293,6 +302,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="OrderPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScrewStockPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdateOrder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdateScrewStock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -329,22 +350,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="OrderButton.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="InventoryButton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="SalaryButton.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ManufactureHistoryButton.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Logo.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Gudang.jpeg" />
+    <Resource Include="2.5 Inch Nail.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="2 Inch Nail.jpeg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Gudang.jpg" />

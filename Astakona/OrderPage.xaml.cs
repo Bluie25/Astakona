@@ -41,11 +41,19 @@ namespace Astakona
         private async void InitializeSignalR()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://192.168.1.3:5210/OrderHub")
+                .WithUrl("http://192.168.1.3:5210/Hubs")
                 .Build();
 
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             await _hubConnection.StartAsync();
+
+            _hubConnection.On("ReceiveOrderEntry", () =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LoadOrders();
+                });
+            });
 
             _hubConnection.On("ReceiveOrderUpdate", () =>
             {
@@ -54,8 +62,16 @@ namespace Astakona
                     LoadOrders();
                 });
             });
+
+            _hubConnection.On("ReceiveOrderDelete", () =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LoadOrders();
+                });
+            });
+
         }
-    
 
         public void LoadOrders()
         {
@@ -104,10 +120,77 @@ namespace Astakona
             Dashboard.Show();
         }
 
+        private void ScrewStockButtonClick(object sender, RoutedEventArgs e)
+        {
+            ScrewStockPage ScrewStockPage = new ScrewStockPage();
+            this.Close();
+            ScrewStockPage.Show();
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((App)Application.Current).ClearLoggedInUserData();
+            Login Login = new Login();
+            this.Close();
+            Login.Show();
+        }
+
         private void AddOrderButton_Click(object sender, RoutedEventArgs e)
         {
-            AddOrder addOrder = new AddOrder();
-            addOrder.Show();
+            AddOrder AddOrder = new AddOrder();
+            AddOrder.Show();
+        }
+
+        private void UpdateOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn != null)
+            {
+                OrdersDetails SelectedOrder = btn.DataContext as OrdersDetails;
+                if (SelectedOrder != null)
+                {
+                    UpdateOrder UpdateOrderPage = new UpdateOrder(SelectedOrder);
+                    UpdateOrderPage.Show();
+                }
+            }
+        }
+
+        private async void DeleteOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn != null)
+            {
+                OrdersDetails SelectedOrder = btn.DataContext as OrdersDetails;
+                if (SelectedOrder != null)
+                {
+                    MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this order?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        try
+                        {
+                            using (SqlConnection conn = new SqlConnection(this.connection))
+                            {
+                                conn.Open();
+                                string query = $"DELETE FROM Orders WHERE OrderID = {SelectedOrder.OrderID}";
+
+                                using (SqlCommand DeleteCommand = new SqlCommand(query, conn))
+                                {
+                                    DeleteCommand.ExecuteNonQuery();
+                                }
+
+                                await _hubConnection.InvokeAsync("SendOrderDelete");
+                                conn.Close();
+                            }
+                        }
+
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error deleting order: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+            }
         }
     }
 }
