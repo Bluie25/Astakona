@@ -27,11 +27,11 @@ namespace Astakona
     /// </summary>
     public partial class UpdateOrder : Window
     {
-        public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+        public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString + ";MultipleActiveResultSets=True";
         private HubConnection _hubConnection;
         public OrdersDetails SelectedOrder;
-        public double SelectedBigScrew;
-        public double SelectedSmallScrew;
+        public double SelectedUnitBigScrew;
+        public double SelectedUnitSmallScrew;
         string error;
 
         public UpdateOrder(OrdersDetails SelectedOrder)
@@ -40,7 +40,6 @@ namespace Astakona
             this.SelectedOrder = SelectedOrder;
             LoadSelectedOrderDetails();
             InitializeSignalR();
-
         }
 
         private async void InitializeSignalR()
@@ -80,6 +79,10 @@ namespace Astakona
             CustomerTB.Text = this.SelectedOrder.Customer.ToString();
             OrderDate.SelectedDate = this.SelectedOrder.Date;
             OrderDate.DisplayDate = this.SelectedOrder.Date;
+            BigScrewTB.Text = this.SelectedOrder.BigScrew.ToString();
+            SmallScrewTB.Text = this.SelectedOrder.SmallScrew.ToString();
+            this.SelectedUnitBigScrew = this.SelectedOrder.BigScrew / this.SelectedOrder.Amount;
+            this.SelectedUnitSmallScrew = this.SelectedOrder.SmallScrew / this.SelectedOrder.Amount;
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -99,8 +102,8 @@ namespace Astakona
                         {
                             while (reader.Read())
                             {
-                                this.SelectedBigScrew = Convert.ToDouble(reader["BigScrew"]);
-                                this.SelectedSmallScrew = Convert.ToDouble(reader["SmallScrew"]);
+                                this.SelectedUnitBigScrew = Convert.ToDouble(reader["BigScrew"]);
+                                this.SelectedUnitSmallScrew = Convert.ToDouble(reader["SmallScrew"]);
                             }
                         }
                     }
@@ -127,8 +130,8 @@ namespace Astakona
             {
                 if (BigScrewTB != null && SmallScrewTB != null)
                 {
-                    BigScrewTB.Text = Convert.ToString(this.SelectedBigScrew * Convert.ToDouble(AmountTB.Text));
-                    SmallScrewTB.Text = Convert.ToString(this.SelectedSmallScrew * Convert.ToDouble(AmountTB.Text));
+                    BigScrewTB.Text = Convert.ToString(this.SelectedUnitBigScrew * Convert.ToDouble(AmountTB.Text));
+                    SmallScrewTB.Text = Convert.ToString(this.SelectedUnitSmallScrew * Convert.ToDouble(AmountTB.Text));
                 }
             }
 
@@ -158,6 +161,9 @@ namespace Astakona
             if (string.IsNullOrEmpty(CustomerTB.Text))
                 errors.AppendLine("Nama customer tidak boleh kosong!\n");
 
+            if (OValue <= 0)
+                errors.AppendLine("Jumlah order tidak boleh 0!\n");
+
             if (PValue > OValue)
                 errors.AppendLine("Jumlah produksi melebihi jumlah order!\n");
 
@@ -166,12 +172,13 @@ namespace Astakona
 
             if (errors.Length > 0)
             {
-                this.error = "";
-                this.error += errors.ToString();
+                this.error = errors.ToString();
+                errors.Clear();
                 return false;
             }
 
-            return true;
+            else
+                return true;
         }
 
         private async void UpdateButton_Clicked(object sender, RoutedEventArgs e)
@@ -185,49 +192,107 @@ namespace Astakona
                 using (SqlConnection conn = new SqlConnection(this.connection))
                 {
                     conn.Open();
-                    using (SqlCommand query = new SqlCommand("UPDATE Orders SET " +
-                                                                "InventoryID=@InventoryID, " +
-                                                                "InventoryName=@InventoryName, " +
-                                                                "Amount=@Amount, " +
-                                                                "BigScrew=@BigScrew, " +
-                                                                "SmallScrew=@SmallScrew, " +
-                                                                "ProductionCompleted=@ProductionCompleted, " +
-                                                                "HeatCompleted=@HeatCompleted, " +
-                                                                "Date=@Date, " +
-                                                                "Customer=@Customer WHERE OrderID=@OrderID", conn))
+                    using (SqlTransaction transaction = conn.BeginTransaction())
                     {
-                        query.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
-                        query.Parameters.Add("@InventoryName", SqlDbType.NVarChar).Value = SelectedInventoryName;
-                        query.Parameters.Add("@Amount", SqlDbType.Real).Value = Convert.ToDouble(AmountTB.Text);
-                        query.Parameters.Add("@BigScrew", SqlDbType.Real).Value = Convert.ToDouble(BigScrewTB.Text);
-                        query.Parameters.Add("@SmallScrew", SqlDbType.Real).Value = Convert.ToDouble(SmallScrewTB.Text);
-                        query.Parameters.Add("@ProductionCompleted", SqlDbType.Real).Value = Convert.ToDouble(ProductionTB.Text);
-                        query.Parameters.Add("@HeatCompleted", SqlDbType.Real).Value = Convert.ToDouble(HTTB.Text);
-                        query.Parameters.Add("@Date", SqlDbType.Date).Value = OrderDate.SelectedDate;
-                        query.Parameters.Add("@Customer", SqlDbType.NVarChar).Value = Convert.ToString(CustomerTB.Text);
-                        query.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
-
-                        int rowsAffected = query.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
+                        try
                         {
-                            await _hubConnection.InvokeAsync("SendOrderUpdate");
-                            conn.Close();
-                            this.Close();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to add order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                            double BigScrewStock = 0;
+                            double SmallScrewStock = 0;
+                            SqlCommand CheckScrewStockQuery = new SqlCommand("SELECT * FROM Screws", conn, transaction);
+                            SqlDataReader CheckScrewStockReader = CheckScrewStockQuery.ExecuteReader();
 
+                            while (CheckScrewStockReader.Read())
+                            {
+                                switch (Convert.ToInt32(CheckScrewStockReader["ScrewID"]))
+                                {
+                                    case 1:
+                                        BigScrewStock = Convert.ToDouble(CheckScrewStockReader["Stock"]);
+                                        break;
+                                    case 2:
+                                        SmallScrewStock = Convert.ToDouble(CheckScrewStockReader["Stock"]);
+                                        break;
+                                }
+                            }
+
+                            if ((Convert.ToDouble(ProductionTB.Text) * this.SelectedUnitBigScrew) > BigScrewStock)
+                            {
+                                error += "Stock paku besar (2 1/2 Inci) tidak cukup!\n";
+                            }
+
+                            if ((Convert.ToDouble(ProductionTB.Text) * this.SelectedUnitSmallScrew) > SmallScrewStock)
+                            {
+                                error += "Stock paku kecil (2 Inci) tidak cukup!\n";
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(this.error))
+                            {
+                                MessageBox.Show(this.error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                this.error = "";
+                                return;
+                            }
+
+                            else
+                            {
+                                using (SqlCommand UpdateOrderQuery = new SqlCommand("UPDATE Orders SET " +
+                                                                            "InventoryID=@InventoryID, " +
+                                                                            "InventoryName=@InventoryName, " +
+                                                                            "Amount=@Amount, " +
+                                                                            "BigScrew=@BigScrew, " +
+                                                                            "SmallScrew=@SmallScrew, " +
+                                                                            "ProductionCompleted=@ProductionCompleted, " +
+                                                                            "HeatCompleted=@HeatCompleted, " +
+                                                                            "Date=@Date, " +
+                                                                            "Customer=@Customer WHERE OrderID=@OrderID", conn, transaction))
+                                {
+                                    UpdateOrderQuery.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
+                                    UpdateOrderQuery.Parameters.Add("@InventoryName", SqlDbType.NVarChar).Value = SelectedInventoryName;
+                                    UpdateOrderQuery.Parameters.Add("@Amount", SqlDbType.Real).Value = Convert.ToDouble(AmountTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@BigScrew", SqlDbType.Real).Value = Convert.ToDouble(BigScrewTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@SmallScrew", SqlDbType.Real).Value = Convert.ToDouble(SmallScrewTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@ProductionCompleted", SqlDbType.Real).Value = Convert.ToDouble(ProductionTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@HeatCompleted", SqlDbType.Real).Value = Convert.ToDouble(HTTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@Date", SqlDbType.Date).Value = OrderDate.SelectedDate;
+                                    UpdateOrderQuery.Parameters.Add("@Customer", SqlDbType.NVarChar).Value = Convert.ToString(CustomerTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
+
+                                    int rowsAffected = UpdateOrderQuery.ExecuteNonQuery();
+
+                                    if (rowsAffected > 0)
+                                    {
+                                        SqlCommand SubtractScrewStockQuery = new SqlCommand("UPDATE Screws SET Stock = Stock - @BigScrew WHERE ScrewID = 1", conn, transaction);
+                                        SubtractScrewStockQuery.Parameters.Add("@BigScrew", SqlDbType.Real).Value = this.SelectedUnitBigScrew * (Convert.ToDouble(ProductionTB.Text) - this.SelectedOrder.ProductionCompleted);
+                                        SubtractScrewStockQuery.ExecuteNonQuery();
+
+                                        SubtractScrewStockQuery = new SqlCommand("UPDATE Screws SET Stock = Stock - @SmallScrew WHERE ScrewID = 2", conn, transaction);
+                                        SubtractScrewStockQuery.Parameters.Add("@SmallScrew", SqlDbType.Real).Value = this.SelectedUnitSmallScrew * (Convert.ToDouble(ProductionTB.Text) - this.SelectedOrder.ProductionCompleted);
+                                        SubtractScrewStockQuery.ExecuteNonQuery();
+
+                                        transaction.Commit();
+                                        await _hubConnection.InvokeAsync("SendOrderUpdate");
+                                        conn.Close();
+                                        this.Close();
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Failed to update order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error during transaction: {ex.Message}\n{ex.StackTrace}");
+                            transaction.Rollback();
+                        }
                     }
                 }
             }
-
             else
+            {
                 MessageBox.Show(this.error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.error = "";
+            }
         }
-
 
         private void CancelButton_Clicked(object sender, RoutedEventArgs e)
         {
