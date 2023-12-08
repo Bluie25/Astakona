@@ -33,8 +33,17 @@ namespace Astakona
             InitializeComponent();
             this.ScrewID = screwID;
             LoadScrewsStock();
+            InitializeSignalR();
         }
+        private async void InitializeSignalR()
+        {
+            _hubConnection = new HubConnectionBuilder()
+                 .WithUrl("http://192.168.1.3:5210/Hubs")
+                 .Build();
 
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+            await _hubConnection.StartAsync();
+        }
 
         public void LoadScrewsStock()
         {
