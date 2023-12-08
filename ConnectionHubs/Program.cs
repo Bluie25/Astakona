@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 
+builder.Configuration.AddJsonFile("appsettings.json");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,6 +20,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -31,4 +35,4 @@ app.MapRazorPages();
 // Map SignalR hub
 app.MapHub<Hubs>("/Hubs");
 
-app.Run();
+app.Run("http://192.168.1.3:5210");

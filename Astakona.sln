@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Astakona", "Astakona\Astakona.csproj", "{DEECE06C-3284-4D05-B210-2A2C8A073E9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectionHubs", "ConnectionHubs\ConnectionHubs.csproj", "{D9C0A279-8E81-4EF8-A8B5-A0915E694CEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConnectionHubs", "ConnectionHubs\ConnectionHubs.csproj", "{D9C0A279-8E81-4EF8-A8B5-A0915E694CEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
