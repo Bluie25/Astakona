@@ -186,9 +186,9 @@
             <Border Grid.Row="2" BorderBrush="#262f3c" BorderThickness="1">
                 <Grid>
                     <Label Content="Stock paku 2 1/2 inci: " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="50 0 0 0"/>
-                    <TextBox x:Name="BigScrewTB" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="180" Margin="180 0 0 0" IsReadOnly="True"/>
+                    <TextBox x:Name="BigScrewTB" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="180" Margin="180 0 0 0" IsReadOnly="True"/>
                     <Label Content="Stock paku 2 inci: " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="500 0 0 0"/>
-                    <TextBox x:Name="SmallScrewTB" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="180" Margin="610 0 0 0" IsReadOnly="True"/>
+                    <TextBox x:Name="SmallScrewTB" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="180" Margin="610 0 0 0" IsReadOnly="True"/>
                     <Button Content="Add Order" Height="40" Width="200" HorizontalAlignment="Right" Margin="0 0 30 0" Click="AddOrderButton_Click"/>
                 </Grid>
             </Border>

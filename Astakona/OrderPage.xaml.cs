@@ -26,7 +26,7 @@ namespace Astakona
     public partial class OrderPage : Window
     {
         private HubConnection _hubConnection;
-        public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+        public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString + ";MultipleActiveResultSets=True";
         public List<OrdersDetails> Orders { get; set; }
        
         public OrderPage()
@@ -113,13 +113,14 @@ namespace Astakona
                                 });
                             }
 
+                            OrdersReader.Close();
                             SqlCommand ScrewsQuery = new SqlCommand("SELECT * FROM Screws", conn, transaction);
                             SqlDataReader ScrewsReader = ScrewsQuery.ExecuteReader();
 
                             while (ScrewsReader.Read())
                             {
-                               switch(Convert.ToDouble(ScrewsReader["ScrewID"]))
-                               {
+                                switch (Convert.ToDouble(ScrewsReader["ScrewID"]))
+                                {
                                     case 1:
                                         BigScrewTB.Text = Convert.ToString(ScrewsReader["Stock"]);
                                         break;
