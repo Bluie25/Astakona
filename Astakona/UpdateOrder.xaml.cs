@@ -73,12 +73,16 @@ namespace Astakona
                 conn.Close();
             }
 
+            InvoiceNoTB.Text = this.SelectedOrder.InvoiceNo.ToString();
             AmountTB.Text = this.SelectedOrder.Amount.ToString();
             ProductionTB.Text = this.SelectedOrder.ProductionCompleted.ToString();
             HTTB.Text = this.SelectedOrder.HeatCompleted.ToString();
+            ManufactureTeamTB.Text = this.SelectedOrder.ManufactureTeam.ToString();
             CustomerTB.Text = this.SelectedOrder.Customer.ToString();
-            OrderDate.SelectedDate = this.SelectedOrder.Date;
-            OrderDate.DisplayDate = this.SelectedOrder.Date;
+            OrderDate.SelectedDate = this.SelectedOrder.OrderDate;
+            OrderDate.DisplayDate = this.SelectedOrder.OrderDate;
+            DueDate.SelectedDate = this.SelectedOrder.DueDate; 
+            DueDate.DisplayDate = this.SelectedOrder.DueDate;
             BigScrewTB.Text = this.SelectedOrder.BigScrew.ToString();
             SmallScrewTB.Text = this.SelectedOrder.SmallScrew.ToString();
             this.SelectedUnitBigScrew = this.SelectedOrder.BigScrew / this.SelectedOrder.Amount;
@@ -148,6 +152,14 @@ namespace Astakona
         private bool VerifyInput()
         {
             StringBuilder errors = new StringBuilder();
+            if (string.IsNullOrEmpty(InvoiceNoTB.Text))
+                errors.AppendLine("Harap isi nomor Invoice!\n");
+
+            if (string.IsNullOrEmpty(ManufactureTeamTB.Text))
+                errors.AppendLine("Harap isi team yang memproduksi!\n");
+
+            if (string.IsNullOrEmpty(CustomerTB.Text))
+                errors.AppendLine("Nama customer tidak boleh kosong!\n");
 
             if (!double.TryParse(AmountTB.Text, out double OValue))
                 errors.AppendLine("Harap isi jumlah order! (boleh 0)\n");
@@ -157,9 +169,6 @@ namespace Astakona
 
             if (!double.TryParse(HTTB.Text, out double HTValue))
                 errors.AppendLine("Harap isi jumlah yang sudah di HT! (boleh 0)\n");
-
-            if (string.IsNullOrEmpty(CustomerTB.Text))
-                errors.AppendLine("Nama customer tidak boleh kosong!\n");
 
             if (OValue <= 0)
                 errors.AppendLine("Jumlah order tidak boleh 0!\n");
@@ -214,12 +223,12 @@ namespace Astakona
                                 }
                             }
 
-                            if ((Convert.ToDouble(ProductionTB.Text) * this.SelectedUnitBigScrew) > BigScrewStock)
+                            if (((Convert.ToDouble(ProductionTB.Text) * this.SelectedUnitBigScrew) - (this.SelectedOrder.ProductionCompleted * this.SelectedUnitBigScrew)) > BigScrewStock)
                             {
                                 error += "Stock paku besar (2 1/2 Inci) tidak cukup!\n";
                             }
 
-                            if ((Convert.ToDouble(ProductionTB.Text) * this.SelectedUnitSmallScrew) > SmallScrewStock)
+                            if (((Convert.ToDouble(ProductionTB.Text) * this.SelectedUnitSmallScrew) - (this.SelectedOrder.ProductionCompleted * this.SelectedUnitSmallScrew)) > SmallScrewStock)
                             {
                                 error += "Stock paku kecil (2 Inci) tidak cukup!\n";
                             }
@@ -232,26 +241,32 @@ namespace Astakona
                             }
 
                             else
-                            {
+                            { 
                                 using (SqlCommand UpdateOrderQuery = new SqlCommand("UPDATE Orders SET " +
                                                                             "InventoryID=@InventoryID, " +
-                                                                            "InventoryName=@InventoryName, " +
+                                                                            "InvoiceNo=@InvoiceNo, " +
+                                                                            "InventoryName=@InventoryName, " + 
+                                                                            "ManufactureTeam=@ManufactureTeam, " +
                                                                             "Amount=@Amount, " +
                                                                             "BigScrew=@BigScrew, " +
                                                                             "SmallScrew=@SmallScrew, " +
                                                                             "ProductionCompleted=@ProductionCompleted, " +
                                                                             "HeatCompleted=@HeatCompleted, " +
-                                                                            "Date=@Date, " +
+                                                                            "OrderDate=@OrderDate, " +
+                                                                            "DueDate=@DueDate, " +
                                                                             "Customer=@Customer WHERE OrderID=@OrderID", conn, transaction))
                                 {
                                     UpdateOrderQuery.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
+                                    UpdateOrderQuery.Parameters.Add("@InvoiceNo", SqlDbType.NVarChar).Value = InvoiceNoTB.Text.ToString();
                                     UpdateOrderQuery.Parameters.Add("@InventoryName", SqlDbType.NVarChar).Value = SelectedInventoryName;
+                                    UpdateOrderQuery.Parameters.Add("@ManufactureTeam", SqlDbType.NVarChar).Value = ManufactureTeamTB.Text.ToString();
                                     UpdateOrderQuery.Parameters.Add("@Amount", SqlDbType.Real).Value = Convert.ToDouble(AmountTB.Text);
                                     UpdateOrderQuery.Parameters.Add("@BigScrew", SqlDbType.Real).Value = Convert.ToDouble(BigScrewTB.Text);
                                     UpdateOrderQuery.Parameters.Add("@SmallScrew", SqlDbType.Real).Value = Convert.ToDouble(SmallScrewTB.Text);
                                     UpdateOrderQuery.Parameters.Add("@ProductionCompleted", SqlDbType.Real).Value = Convert.ToDouble(ProductionTB.Text);
                                     UpdateOrderQuery.Parameters.Add("@HeatCompleted", SqlDbType.Real).Value = Convert.ToDouble(HTTB.Text);
-                                    UpdateOrderQuery.Parameters.Add("@Date", SqlDbType.Date).Value = OrderDate.SelectedDate;
+                                    UpdateOrderQuery.Parameters.Add("@OrderDate", SqlDbType.Date).Value = OrderDate.SelectedDate;
+                                    UpdateOrderQuery.Parameters.Add("@DueDate", SqlDbType.Date).Value = DueDate.SelectedDate;
                                     UpdateOrderQuery.Parameters.Add("@Customer", SqlDbType.NVarChar).Value = Convert.ToString(CustomerTB.Text);
                                     UpdateOrderQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
 
@@ -266,9 +281,13 @@ namespace Astakona
                                         SubtractScrewStockQuery = new SqlCommand("UPDATE Screws SET Stock = Stock - @SmallScrew WHERE ScrewID = 2", conn, transaction);
                                         SubtractScrewStockQuery.Parameters.Add("@SmallScrew", SqlDbType.Real).Value = this.SelectedUnitSmallScrew * (Convert.ToDouble(ProductionTB.Text) - this.SelectedOrder.ProductionCompleted);
                                         SubtractScrewStockQuery.ExecuteNonQuery();
+                                       
 
+                                        
                                         transaction.Commit();
                                         await _hubConnection.InvokeAsync("SendOrderUpdate");
+                                        
+                                        
                                         conn.Close();
                                         this.Close();
                                     }

@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Diagnostics;
+using static System.Net.WebRequestMethods;
 
 
 namespace Astakona
@@ -32,6 +33,8 @@ namespace Astakona
         public double SelectedSmallScrew;
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
         private HubConnection _hubConnection;
+        public string error;
+
         public AddOrder()
         {
             InitializeComponent();
@@ -130,16 +133,32 @@ namespace Astakona
 
         private bool ValidateInputs()
         {
-            if (ComboBox.SelectedItem != null && !string.IsNullOrEmpty(AmountTB.Text) && !string.IsNullOrEmpty(BigScrewTB.Text) && 
-                !string.IsNullOrEmpty(SmallScrewTB.Text) && !string.IsNullOrEmpty(CustomerTB.Text) && Convert.ToDouble(AmountTB.Text) > 0)
+            StringBuilder errors = new StringBuilder();
+
+            if (string.IsNullOrEmpty(InvoiceNoTB.Text))
+                errors.AppendLine("Harap isi nomor Invoice!\n");
+
+            if(ComboBox.SelectedItem == null)
+                errors.AppendLine("Harap pilih item order!\n");
+
+            if (string.IsNullOrEmpty(ManufactureTeamTB.Text))
+                errors.AppendLine("Harap isi team yang memproduksi!\n");
+
+            if(string.IsNullOrEmpty(AmountTB.Text))
+                errors.AppendLine("Harap isi jumlah order! (boleh 0)\n");
+
+            if (string.IsNullOrEmpty(CustomerTB.Text))
+                errors.AppendLine("Nama customer tidak boleh kosong!\n");
+
+            if (errors.Length > 0)
             {
-                return true;
+                this.error = errors.ToString();
+                errors.Clear();
+                return false;
             }
 
-            else 
-            {
-                return false; 
-            }
+            else
+                return true;
         }
    
 
@@ -154,17 +173,20 @@ namespace Astakona
                 using (SqlConnection conn = new SqlConnection(this.connection))
                 {
                     conn.Open();
-                    using (SqlCommand query = new SqlCommand("INSERT INTO Orders (InventoryID, InventoryName, Amount, BigScrew, SmallScrew, ProductionCompleted, HeatCompleted, Date, Customer) " +
-                                                             "VALUES (@InventoryID, @InventoryName, @Amount, @BigScrew, @SmallScrew, @ProductionCompleted, @HeatCompleted, @Date, @Customer)", conn))
+                    using (SqlCommand query = new SqlCommand("INSERT INTO Orders (InventoryID, InvoiceNo, InventoryName, Amount, BigScrew, SmallScrew, ProductionCompleted, HeatCompleted, Customer, OrderDate, DueDate, ManufactureTeam) " +
+                                                             "VALUES (@InventoryID, @InvoiceNo, @InventoryName, @Amount, @BigScrew, @SmallScrew, @ProductionCompleted, @HeatCompleted, @Customer, @OrderDate, @DueDate, @ManufactureTeam)", conn))
                     {
                         query.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
+                        query.Parameters.Add("@InvoiceNo", SqlDbType.NVarChar).Value = InvoiceNoTB.Text;
                         query.Parameters.Add("@InventoryName", SqlDbType.NVarChar).Value = SelectedInventoryName;
                         query.Parameters.Add("@Amount", SqlDbType.Real).Value = Convert.ToDouble(AmountTB.Text);
                         query.Parameters.Add("@BigScrew", SqlDbType.Real).Value = Convert.ToDouble(BigScrewTB.Text);
                         query.Parameters.Add("@SmallScrew", SqlDbType.Real).Value = Convert.ToDouble(SmallScrewTB.Text);
                         query.Parameters.Add("@ProductionCompleted", SqlDbType.Real).Value = 0;
                         query.Parameters.Add("@HeatCompleted", SqlDbType.Real).Value = 0;
-                        query.Parameters.Add("@Date", SqlDbType.Date).Value = OrderDate.SelectedDate;
+                        query.Parameters.Add("@OrderDate", SqlDbType.Date).Value = OrderDate.SelectedDate;
+                        query.Parameters.Add("@DueDate", SqlDbType.Date).Value = DueDate.SelectedDate;
+                        query.Parameters.Add("@ManufactureTeam", SqlDbType.NVarChar).Value = ManufactureTeamTB.Text;
                         query.Parameters.Add("@Customer", SqlDbType.NVarChar).Value = Convert.ToString(CustomerTB.Text);
 
                         int rowsAffected = query.ExecuteNonQuery();
@@ -182,6 +204,11 @@ namespace Astakona
 
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show(this.error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.error = "";
             }
         }
           

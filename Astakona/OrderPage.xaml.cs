@@ -101,6 +101,7 @@ namespace Astakona
                                 this.Orders.Add(new OrdersDetails()
                                 {
                                     OrderID = Convert.ToInt32(OrdersReader["OrderID"]),
+                                    InvoiceNo = Convert.ToString(OrdersReader["InvoiceNo"]),
                                     InventoryID = Convert.ToInt32(OrdersReader["InventoryID"]),
                                     InventoryName = Convert.ToString(OrdersReader["InventoryName"]),
                                     Amount = Convert.ToDouble(OrdersReader["Amount"]),
@@ -108,8 +109,10 @@ namespace Astakona
                                     SmallScrew = Convert.ToDouble(OrdersReader["SmallScrew"]),
                                     ProductionCompleted = Convert.ToDouble(OrdersReader["ProductionCompleted"]),
                                     HeatCompleted = Convert.ToDouble(OrdersReader["HeatCompleted"]),
-                                    Date = OrdersReader.GetDateTime(8),
                                     Customer = Convert.ToString(OrdersReader["Customer"]),
+                                    OrderDate = OrdersReader.GetDateTime(OrdersReader.GetOrdinal("OrderDate")),
+                                    DueDate = OrdersReader.GetDateTime(OrdersReader.GetOrdinal("DueDate")),
+                                    ManufactureTeam = OrdersReader.GetString(OrdersReader.GetOrdinal("ManufactureTeam"))
                                 });
                             }
 

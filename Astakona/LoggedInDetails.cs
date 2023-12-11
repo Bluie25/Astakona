@@ -10,5 +10,13 @@ namespace Astakona
     {
         public int EmployeeID { get; set; }
         public string EmployeeUsername { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public double Salary { get; set; }
+        public bool ManageAccounts { get; set; }
+        public bool AccessSalaries { get; set; }
+        public bool AddOrder { get; set; }
+        public bool UpdateOrder { get; set; }
+        public bool DeleteOrder { get; set; }
     }
 }

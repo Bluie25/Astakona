@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:Astakona"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Order" Height="1080" Width="1920"
+        Title="Order" 
+        Height="768" 
+        Width="1366"
         WindowState="Maximized">
     
     <Window.Resources>
@@ -44,41 +46,41 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="150"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" Background="#212833">
             <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" >
                 <TextBlock  Text="{Binding Source={x:Static local:App.Current}, Path=LoggedInUser.EmployeeUsername, StringFormat=Welcome {0}}" 
                             HorizontalAlignment="Center" VerticalAlignment="Center"
-                            FontSize="20" FontFamily="Helvetica" Foreground="White"/>
+                            FontSize="12" FontFamily="Helvetica" Foreground="White"/>
             </Grid>
 
             <Grid Grid.Row="1">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="HomePageButton_Click">
-                    <TextBlock Text="Home" FontWeight="Bold" FontFamily="Helvetica" Margin="50 0 0 0"/>
+                    <TextBlock Text="Home" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
             <Grid Grid.Row="2">
                 <Button Background="#2e3746" Foreground="White" Style="{StaticResource PanelButtonStyle}" IsEnabled="False">
-                    <TextBlock Text="Orders" FontWeight="Bold" FontFamily="Helvetica" Margin="50 0 0 0"/>
+                    <TextBlock Text="Orders" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
             <Grid Grid.Row="3">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="ScrewStockButtonClick">
-                    <TextBlock Text="Stock Paku" FontWeight="Bold" FontFamily="Helvetica" Margin="50 0 0 0"/>
+                    <TextBlock Text="Stock Paku" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
@@ -87,20 +89,20 @@
 
             <Grid Grid.Row="5">
                 <Button  Style="{StaticResource PanelButtonStyle}" Click="LogoutButton_Click">
-                    <TextBlock Text="Log Out" FontWeight="Bold" FontFamily="Helvetica" Margin="50 0 0 0"/>
+                    <TextBlock Text="Log Out" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
         </Grid>
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0" BorderBrush="#262f3c" BorderThickness="1">
-                <TextBlock FontWeight="Bold" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 20 0">
+                <TextBlock FontWeight="Bold" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 20 0">
                     <TextBlock.Text>
                         <Binding Source="{x:Static sys:DateTime.Now}" StringFormat=" {0:dd MMM yyyy}, {0:HH:mm tt}"/>
                     </TextBlock.Text>
@@ -111,16 +113,67 @@
                 <ListView  Background="#eff2f6" ItemsSource="{Binding Orders}">
                     <ListView.View>
                         <GridView>
+                            <GridView.ColumnHeaderContainerStyle>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </GridView.ColumnHeaderContainerStyle>
                             <GridViewColumn Header="Kode Order" Width="0" DisplayMemberBinding="{Binding OrderID}"/>
-                            <GridViewColumn Header="Nama Barang" Width="150" DisplayMemberBinding="{Binding InventoryName}" />
-                            <GridViewColumn Header="Jumlah Orderan" Width="150" DisplayMemberBinding="{Binding Amount}" />
-                            <GridViewColumn Header="Pemakaian Paku 2 1/2 Inci" Width="150" DisplayMemberBinding="{Binding BigScrew}" />
-                            <GridViewColumn Header="Pemakaian Paku 2 Inci" Width="150" DisplayMemberBinding="{Binding SmallScrew}" />
-                            <GridViewColumn Header="Jumlah Terproduksi" Width="150" DisplayMemberBinding="{Binding ProductionCompleted}" />
-                            <GridViewColumn Header="Jumlah HT" Width="150" DisplayMemberBinding="{Binding HeatCompleted}" />
-                            <GridViewColumn Header="Tanggal Order" Width="130" DisplayMemberBinding="{Binding Date, StringFormat={}{0:dd MMMM yyyy}}" />
-                            <GridViewColumn Header="Customer" Width="200" DisplayMemberBinding="{Binding Customer}" />
-                            <GridViewColumn Header="Update Order" Width="100">
+                            <GridViewColumn Header="No. Invoice" Width="80" DisplayMemberBinding="{Binding InvoiceNo}"/>
+                            <GridViewColumn Header="Nama" DisplayMemberBinding="{Binding InventoryName}" Width="120"/>
+                            <GridViewColumn Header="Jumlah Order" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Amount}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Paku Besar" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding BigScrew}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Paku Kecil" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding SmallScrew}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Terproduksi" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ProductionCompleted}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="HT" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding HeatCompleted}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Customer" DisplayMemberBinding="{Binding Customer}" Width="130"/>
+                            <GridViewColumn Header="Tanggal Order" Width="100" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding OrderDate, StringFormat={}{0:dd/MM/yyyy}}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Jatuh Tempo" Width="100" >
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DueDate, StringFormat={}{0:dd/MM/yyyy}}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Team" DisplayMemberBinding="{Binding ManufactureTeam}" Width="90"/>
+                            <GridViewColumn Header="Update" Width="78">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Content="Update" Click="UpdateOrderButton_Click"
@@ -146,7 +199,7 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Delete Order" Width="100">
+                            <GridViewColumn Header="Delete" Width="78">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Content="Delete" Click="DeleteOrderButton_Click"
@@ -177,7 +230,12 @@
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                             <Setter Property="Height" Value="40"/>
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                            <Setter Property="BorderThickness" Value="0.8"/>
+                            <Setter Property="BorderBrush" Value="#262f3c"/>
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
@@ -189,7 +247,7 @@
                     <TextBox x:Name="BigScrewTB" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="180" Margin="180 0 0 0" IsReadOnly="True"/>
                     <Label Content="Stock paku 2 inci: " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="500 0 0 0"/>
                     <TextBox x:Name="SmallScrewTB" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="180" Margin="610 0 0 0" IsReadOnly="True"/>
-                    <Button Content="Add Order" Height="40" Width="200" HorizontalAlignment="Right" Margin="0 0 30 0" Click="AddOrderButton_Click"/>
+                    <Button Content="Add Order" Height="30" Width="200" HorizontalAlignment="Right" Margin="0 0 30 0" Click="AddOrderButton_Click"/>
                 </Grid>
             </Border>
         </Grid>

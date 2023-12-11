@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:Astakona"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Astakona" Height="1080" Width="1920"
+        Title="Astakona" 
+        Height="768" 
+        Width="1366"
         WindowState="Maximized">
 
     <Window.Resources>
@@ -36,41 +38,41 @@
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="150"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" Background="#212833">
             <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" >
                 <TextBlock  Text="{Binding Source={x:Static local:App.Current}, Path=LoggedInUser.EmployeeUsername, StringFormat=Welcome {0}}" 
                             HorizontalAlignment="Center" VerticalAlignment="Center"
-                            FontSize="20" FontFamily="Helvetica" Foreground="White"/>
+                            FontSize="12" FontFamily="Helvetica" Foreground="White"/>
             </Grid>
 
             <Grid Grid.Row="1">
                 <Button Background="#2e3746" Foreground="White" Style="{StaticResource PanelButtonStyle}" IsEnabled="False">
-                    <TextBlock Text="Home" FontWeight="Bold" FontFamily="Helvetica" Margin="50 0 0 0"/>
+                    <TextBlock Text="Home" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
             <Grid Grid.Row="2">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="OrderButtonClick">
-                    <TextBlock Text="Orders" FontWeight="Bold" FontFamily="Helvetica" Margin="50 0 0 0"/>
+                    <TextBlock Text="Orders" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
             <Grid Grid.Row="3">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="ScrewStockButtonClick">
-                    <TextBlock Text="Stock Paku" FontWeight="Bold" FontFamily="Helvetica" Margin="50 0 0 0"/>
+                    <TextBlock Text="Stock Paku" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
@@ -79,19 +81,19 @@
 
             <Grid Grid.Row="5">
                 <Button  Style="{StaticResource PanelButtonStyle}" Click="LogoutButton_Click">
-                    <TextBlock Text="Log Out" FontWeight="Bold" FontFamily="Helvetica" Margin="50 0 0 0"/>
+                    <TextBlock Text="Log Out" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
         </Grid>
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0" BorderBrush="#262f3c" BorderThickness="1">
-                <TextBlock FontWeight="Bold" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 20 0">
+                <TextBlock FontWeight="Bold" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 20 0">
                     <TextBlock.Text>
                         <Binding Source="{x:Static sys:DateTime.Now}" StringFormat=" {0:dd MMM yyyy}, {0:HH:mm tt}"/>
                     </TextBlock.Text>
