@@ -48,8 +48,16 @@ namespace Astakona
                             {
                                 LoggedInDetails LoggedInUser = new LoggedInDetails{
                                     EmployeeID = reader.GetInt32(reader.GetOrdinal("EmployeeID")),
-                                    EmployeeUsername = reader.GetString(reader.GetOrdinal("Username"))
-                                };
+                                    Name = reader.GetString(reader.GetOrdinal("EmployeeName")),
+                                    Username = reader.GetString(reader.GetOrdinal("Username")),
+                                    Password = reader.GetString(reader.GetOrdinal("Password")),
+                                    Salary = reader.GetFloat(reader.GetOrdinal("Salary")),
+                                    ManageAccounts = reader.GetBoolean(reader.GetOrdinal("ManageAccounts")),
+                                    AccessSalaries = reader.GetBoolean(reader.GetOrdinal("AccessSalaries")),
+                                    AddOrder = reader.GetBoolean(reader.GetOrdinal("AddOrder")),
+                                    UpdateOrder = reader.GetBoolean(reader.GetOrdinal("UpdateOrder")),
+                                    DeleteOrder = reader.GetBoolean(reader.GetOrdinal("DeleteOrder"))};
+
                                 ((App)Application.Current).LoggedInUser = LoggedInUser;
                                 Dashboard Dashboard = new Dashboard();
                                 this.Close();
@@ -63,7 +71,16 @@ namespace Astakona
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message);
+                // Log the exception details, including the stack trace
+                MessageBox.Show($"An error occurred: {ex.Message}\n\nStackTrace: {ex.StackTrace}");
+
+                // Optionally, log inner exceptions if present
+                Exception innerException = ex.InnerException;
+                while (innerException != null)
+                {
+                    MessageBox.Show($"Inner Exception: {innerException.Message}\n\nStackTrace: {innerException.StackTrace}");
+                    innerException = innerException.InnerException;
+                }
             }
         }
     

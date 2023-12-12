@@ -83,7 +83,7 @@
         </Grid>
 
         <Grid Grid.Row="3" Grid.Column="1">
-            <Label HorizontalAlignment="Center" VerticalAlignment="Top">Jatuh tempo:</Label>
+            <Label HorizontalAlignment="Center" VerticalAlignment="Top">Tanggal jatuh tempo:</Label>
             <Calendar x:Name="DueDate" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 0 0"/>
         </Grid>
 

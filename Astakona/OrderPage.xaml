@@ -61,7 +61,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" >
-                <TextBlock  Text="{Binding Source={x:Static local:App.Current}, Path=LoggedInUser.EmployeeUsername, StringFormat=Welcome {0}}" 
+                <TextBlock  Text="{Binding Source={x:Static local:App.Current}, Path=LoggedInUser.Name, StringFormat=Welcome {0}}" 
                             HorizontalAlignment="Center" VerticalAlignment="Center"
                             FontSize="12" FontFamily="Helvetica" Foreground="White"/>
             </Grid>
@@ -176,9 +176,9 @@
                             <GridViewColumn Header="Update" Width="78">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="Update" Click="UpdateOrderButton_Click"
+                                        <Button x:Name="UpdateOrderBtn"  Content="Update" Click="UpdateOrderButton_Click"
                                             CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="UpdateOrderBtn_Loaded">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Background" Value="#9bedff"/>
@@ -202,9 +202,9 @@
                             <GridViewColumn Header="Delete" Width="78">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="Delete" Click="DeleteOrderButton_Click"
+                                        <Button x:Name="DeleteOrderBtn" Content="Delete" Click="DeleteOrderButton_Click"
                                             CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="DeleteOrderBtn_Loaded">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Background" Value="#ff9b9b"/>
@@ -236,6 +236,7 @@
                             <Setter Property="Foreground" Value="Black"/>
                             <Setter Property="BorderThickness" Value="0.8"/>
                             <Setter Property="BorderBrush" Value="#262f3c"/>
+                            <EventSetter Event="Loaded" Handler="ListViewItem_Loaded"/>
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
@@ -247,7 +248,7 @@
                     <TextBox x:Name="BigScrewTB" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="180" Margin="180 0 0 0" IsReadOnly="True"/>
                     <Label Content="Stock paku 2 inci: " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="500 0 0 0"/>
                     <TextBox x:Name="SmallScrewTB" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="180" Margin="610 0 0 0" IsReadOnly="True"/>
-                    <Button Content="Add Order" Height="30" Width="200" HorizontalAlignment="Right" Margin="0 0 30 0" Click="AddOrderButton_Click"/>
+                    <Button x:Name="AddOrderBtn" Content="Add Order" Height="30" Width="200" HorizontalAlignment="Right" Margin="0 0 30 0" Click="AddOrderButton_Click"/>
                 </Grid>
             </Border>
         </Grid>

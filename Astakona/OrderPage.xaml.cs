@@ -27,8 +27,21 @@ namespace Astakona
     {
         private HubConnection _hubConnection;
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString + ";MultipleActiveResultSets=True";
+        private Button UpdateOrderBtn;
+        private Button DeleteOrderBtn;
         public List<OrdersDetails> Orders { get; set; }
-       
+
+        // Add this method in your code-behind
+        private void UpdateOrderBtn_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.UpdateOrderBtn = (Button)sender;
+        }
+
+        private void DeleteOrderBtn_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.DeleteOrderBtn = (Button)sender;
+        }
+
         public OrderPage()
         {
             InitializeComponent();
@@ -36,6 +49,16 @@ namespace Astakona
             Orders = new List<OrdersDetails>();
             LoadPage();
             DataContext = this;
+
+
+            //To disable features based on accounts access authorization
+            var LoggedInUser = ((App)Application.Current).LoggedInUser;
+            if (!LoggedInUser.AddOrder)
+                AddOrderBtn.IsEnabled = false;
+            /*if(this.UpdateOrderBtn != null && !LoggedInUser.UpdateOrder)
+                this.UpdateOrderBtn.IsEnabled = false;
+            if(this.DeleteOrderBtn != null && !LoggedInUser.DeleteOrder)
+                this.DeleteOrderBtn.IsEnabled = false;*/
         }
 
         private async void InitializeSignalR()
@@ -232,6 +255,43 @@ namespace Astakona
                     }
                 }
             }
+        }
+
+        private void ListViewItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            ListViewItem listViewItem = (ListViewItem)sender;
+            Button updateButton = FindChild<Button>(listViewItem, "UpdateOrderBtn");
+            Button deleteButton = FindChild<Button>(listViewItem, "DeleteOrderBtn");
+
+            if (updateButton != null && deleteButton != null)
+            {
+                var loggedInUser = ((App)Application.Current).LoggedInUser;
+
+                if (!loggedInUser.UpdateOrder)
+                    updateButton.IsEnabled = false;
+
+                if (!loggedInUser.DeleteOrder)
+                    deleteButton.IsEnabled = false;
+            }
+        }
+
+        private T FindChild<T>(DependencyObject parent, string childName) where T : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T && ((FrameworkElement)child).Name == childName)
+                {
+                    return (T)child;
+                }
+                else
+                {
+                    T childOfChild = FindChild<T>(child, childName);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Astakona
     public class LoggedInDetails
     {
         public int EmployeeID { get; set; }
-        public string EmployeeUsername { get; set; }
+        public string Name { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public double Salary { get; set; }
