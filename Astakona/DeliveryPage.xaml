@@ -169,7 +169,7 @@
                             <GridViewColumn Header="Update" Width="78">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button x:Name="UpdatePalletBtn"  Content="Update" Click="UpdateDeliveryButton_Click"
+                                        <Button x:Name="UpdateDeliveryBtn"  Content="Update" Click="UpdateDeliveryButton_Click"
                                             CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}"
                                             HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="UpdateDeliveryBtn_Loaded">
                                             <Button.Style>
