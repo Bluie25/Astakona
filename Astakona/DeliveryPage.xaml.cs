@@ -76,7 +76,7 @@ namespace Astakona
                                 InventoryName = Convert.ToString(Reader["InventoryName"]),
                                 Amount = Convert.ToDouble(Reader["Amount"]),
                                 ProductionCompleted = Convert.ToDouble(Reader["ProductionCompleted"]),
-                                HTBTS = Convert.ToDouble(Reader["HTTBS"]),
+                                HTBTS = Convert.ToDouble(Reader["HTBTS"]),
                                 HTEKS = Convert.ToDouble(Reader["HTEKS"]),
                                 HTKKS = Convert.ToDouble(Reader["HTKKS"]),
                                 TotalHeatCompleted = Convert.ToDouble(Reader["HTEKS"]) + Convert.ToDouble(Reader["HTBTS"]) + Convert.ToDouble(Reader["HTKKS"]),
