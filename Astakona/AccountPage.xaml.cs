@@ -62,7 +62,6 @@ namespace Astakona
         private void ShowButtonClick(object sender, MouseButtonEventArgs e)
         {
             PasswordBox.Visibility = Visibility.Visible;
-            PasswordBox.Focus();
         }
 
         private void ShowButtonRelease(object sender, MouseButtonEventArgs e)

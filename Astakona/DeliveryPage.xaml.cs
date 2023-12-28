@@ -137,7 +137,7 @@ namespace Astakona
             return null;
         }
 
-        private void UpdateOrderButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateDeliveryButton_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
             if (btn != null)

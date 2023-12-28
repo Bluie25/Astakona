@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Astakona"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Order" 
+        Title="On going Orders" 
         Height="768" 
         Width="1366"
         WindowState="Maximized">

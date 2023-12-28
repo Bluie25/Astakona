@@ -120,16 +120,14 @@
 
             <Grid Grid.Row="1" Background="#eff2f6">
                 <Label FontSize="20" FontFamily="Helvetica" Margin="30 30 0 0" Content="Nama lengkap:"/>
-                <TextBox x:Name="NameTB" Width="250" Height="30" Margin="200 33 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True" IsHitTestVisible="False"/>
-                
-                
-                
+                <TextBox x:Name="NameTB" FontSize="20" Width="250" Height="30" Margin="200 33 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True" IsHitTestVisible="False"/>
+
                 <Label FontSize="20" FontFamily="Helvetica" Margin="69 100 0 0" Content="Username:"/>
-                <TextBox x:Name="UsernameTB" Width="250" Height="30" Margin="200 103 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True" IsHitTestVisible="False"/>
+                <TextBox x:Name="UsernameTB" FontSize="20" Width="250" Height="30" Margin="200 103 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True" IsHitTestVisible="False"/>
                 <Button Width="120" Height="30" Margin="480 103 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Edit" Click="EditUsernameButtonClick"/>
 
                 <Label FontSize="20" FontFamily="Helvetica" Margin="76 170 0 0" Content="Password:"/>
-                <PasswordBox x:Name="PasswordBox" Width="250" Height="30" Margin="200 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsEnabled="False" IsHitTestVisible="False"/>
+                <PasswordBox x:Name="PasswordBox" FontSize="20" Width="250" Height="30" Margin="200 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsEnabled="False" IsHitTestVisible="False"/>
                 <Button Width="60" Height="30" Margin="480 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Show" FontWeight="Bold" PreviewMouseLeftButtonDown="ShowButtonClick" PreviewMouseLeftButtonUp="ShowButtonRelease" />
                 <Button Width="120" Height="30" Margin="570 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top"  Content="Edit" Click="EditPasswordButtonClick"/>
             </Grid>

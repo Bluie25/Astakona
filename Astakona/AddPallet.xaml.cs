@@ -99,7 +99,6 @@ namespace Astakona
                                 await _hubConnection.StopAsync();
                             }
 
-                            await _hubConnection.InvokeAsync("SendPalletsPageUpdate");
                             conn.Close();
                             this.Close();
                         }

@@ -89,13 +89,14 @@ namespace Astakona
 
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(connection))
+                    using (SqlConnection conn = new SqlConnection(this.connection))
                     {
                         conn.Open();
 
                         using (SqlCommand Query = new SqlCommand(ConnQuery, conn))
                         {
                             Query.Parameters.Add("@Value", SqlDbType.NVarChar).Value = PlaceholderTB.Text;
+                            Query.Parameters.Add("@EmployeeID", SqlDbType.Int).Value = ((App)Application.Current).LoggedInUser.EmployeeID;
                             Query.ExecuteNonQuery();
 
                             if (this.LBL == "Username:")

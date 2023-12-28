@@ -133,19 +133,32 @@
                             <GridViewColumn Header="Ready Stock / Order" Width="150">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding TotalHeatCompleted}" HorizontalAlignment="Center"/>
+                                        <TextBlock HorizontalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} / {1}">
+                                                    <Binding Path="TotalHeatCompleted" />
+                                                    <Binding Path="Amount" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="Terkirim / Order" Width="150">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Delivered}" HorizontalAlignment="Center"/>
+                                        <TextBlock HorizontalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} / {1}">
+                                                    <Binding Path="Delivered" />
+                                                    <Binding Path="Amount" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Header="Customer" DisplayMemberBinding="{Binding Customer}" Width="150"/>
-
                             <GridViewColumn Header="Jatuh Tempo" Width="100" >
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -156,9 +169,9 @@
                             <GridViewColumn Header="Update" Width="78">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button x:Name="UpdatePalletBtn"  Content="Update"
+                                        <Button x:Name="UpdatePalletBtn"  Content="Update" Click="UpdateDeliveryButton_Click"
                                             CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="UpdateDeliveryBtn_Loaded">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Background" Value="#9bedff"/>

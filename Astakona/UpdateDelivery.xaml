@@ -38,7 +38,7 @@
         <Grid Grid.Row="1" Grid.Column="1">
             <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="Ready stock / order:"/>
             <TextBox x:Name="ReadyStockTB" Background="#A9A9A9" Height="20" Width="100" HorizontalAlignment="Right" Margin="0 0 80 0" IsReadOnly="True" IsHitTestVisible="False"/>
-            <Label x:Name="AmountLB" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Margin="220 0 0 5"/>
+            <Label x:Name="AmountLB" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13" Margin="220 0 0 5"/>
         </Grid>
         
         <Grid Grid.Row="2" Grid.Column="0">
