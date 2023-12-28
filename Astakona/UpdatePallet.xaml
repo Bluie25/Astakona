@@ -1,0 +1,67 @@
+﻿<Window x:Class="Astakona.UpdatePallet"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Astakona"
+        mc:Ignorable="d"
+        Title="Update Pallet" Height="500" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="70"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Label FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Detail Pallet" TextDecorations="Underline"/>
+            </Label>
+        </Grid>
+        
+        <Grid Grid.Row="1">
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="Nama Pallet:" Margin="0 0 145 0"/>
+            <TextBox x:Name="NameTB" Width="200" Height="25" Margin="150 0 0 0"/>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="Jumlah Stock:" Margin="0 0 150 0"/>
+            <TextBox x:Name="StockTB" Width="200" Height="25" Margin="150 0 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+        </Grid>
+        
+        <Grid Grid.Row="3">
+            <Label FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Formula" TextDecorations="Underline"/>
+            </Label>
+        </Grid>
+        
+        <Grid Grid.Row="4">
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="Paku besar (2 1/2 Inci) yang terpakai:" Margin="0 0 275 0"/>
+            <TextBox x:Name="BigScrewTB" Width="200" Height="25" Margin="150 0 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+        </Grid>
+
+        <Grid Grid.Row="5">
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="Paku kecil (2 Inci) yang terpakai:" Margin="0 0 250 0"/>
+            <TextBox x:Name="SmallScrewTB" Width="200" Height="25" Margin="150 0 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+        </Grid>
+
+        <Grid Grid.Row="9">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Button Content="Cancel" Width="170" Height="50" Click="CancelButtonClick"/>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Button Content="Update" Width="170" Height="50" Click="UpdateButtonClick"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

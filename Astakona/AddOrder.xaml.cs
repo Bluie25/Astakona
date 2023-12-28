@@ -82,12 +82,12 @@ namespace Astakona
                 using (SqlConnection conn = new SqlConnection(this.connection))
                 {
                     conn.Open();
-                    using (SqlCommand query = new SqlCommand("SELECT BigScrew, SmallScrew FROM Formulas WHERE InventoryID=@InventoryID", conn))
+                    using (SqlCommand query = new SqlCommand("SELECT BigScrew, SmallScrew FROM Inventories WHERE InventoryID=@InventoryID", conn))
                     {
                         query.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
                         using (SqlDataReader reader = query.ExecuteReader())
                         {
-                            while(reader.Read())
+                            while (reader.Read())
                             {
                                 this.SelectedBigScrew = Convert.ToDouble(reader["BigScrew"]);
                                 this.SelectedSmallScrew = Convert.ToDouble(reader["SmallScrew"]);
@@ -95,17 +95,17 @@ namespace Astakona
                         }
                     }
                     conn.Close();
-                    UpdateScrewValues();
+                    UpdateMaterialsValues();
                 }
             }
         }
 
         private void AmountTB_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UpdateScrewValues();
+            UpdateMaterialsValues();
         }
 
-        private void UpdateScrewValues()
+        private void UpdateMaterialsValues()
         {
             if (ComboBox.SelectedItem != null && !string.IsNullOrEmpty(AmountTB.Text))
             {
@@ -135,20 +135,20 @@ namespace Astakona
         {
             StringBuilder errors = new StringBuilder();
 
-            if (string.IsNullOrEmpty(InvoiceNoTB.Text))
-                errors.AppendLine("Harap isi nomor Invoice!\n");
+            if (ComboBox.SelectedItem != null)
+            {
+                if (string.IsNullOrEmpty(InvoiceNoTB.Text))
+                    errors.AppendLine("Harap isi nomor Invoice!\n");
 
-            if(ComboBox.SelectedItem == null)
+                if (string.IsNullOrEmpty(AmountTB.Text))
+                    errors.AppendLine("Harap isi jumlah order! (boleh 0)\n");
+
+                if (string.IsNullOrEmpty(CustomerTB.Text))
+                    errors.AppendLine("Nama customer tidak boleh kosong!\n");
+            }
+
+            else
                 errors.AppendLine("Harap pilih item order!\n");
-
-            if (string.IsNullOrEmpty(ManufactureTeamTB.Text))
-                errors.AppendLine("Harap isi team yang memproduksi!\n");
-
-            if(string.IsNullOrEmpty(AmountTB.Text))
-                errors.AppendLine("Harap isi jumlah order! (boleh 0)\n");
-
-            if (string.IsNullOrEmpty(CustomerTB.Text))
-                errors.AppendLine("Nama customer tidak boleh kosong!\n");
 
             if (errors.Length > 0)
             {
@@ -173,27 +173,27 @@ namespace Astakona
                 using (SqlConnection conn = new SqlConnection(this.connection))
                 {
                     conn.Open();
-                    using (SqlCommand query = new SqlCommand("INSERT INTO Orders (InventoryID, InvoiceNo, InventoryName, Amount, BigScrew, SmallScrew, ProductionCompleted, HeatCompleted, Customer, OrderDate, DueDate, ManufactureTeam) " +
-                                                             "VALUES (@InventoryID, @InvoiceNo, @InventoryName, @Amount, @BigScrew, @SmallScrew, @ProductionCompleted, @HeatCompleted, @Customer, @OrderDate, @DueDate, @ManufactureTeam)", conn))
+                    using (SqlCommand query = new SqlCommand("INSERT INTO Orders (InventoryID, InvoiceNo, InventoryName, Amount, Customer, OrderDate, DueDate) " +
+                                                             "VALUES (@InventoryID, @InvoiceNo, @InventoryName, @Amount, @Customer, @OrderDate, @DueDate)", conn))
                     {
                         query.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
                         query.Parameters.Add("@InvoiceNo", SqlDbType.NVarChar).Value = InvoiceNoTB.Text;
                         query.Parameters.Add("@InventoryName", SqlDbType.NVarChar).Value = SelectedInventoryName;
                         query.Parameters.Add("@Amount", SqlDbType.Real).Value = Convert.ToDouble(AmountTB.Text);
-                        query.Parameters.Add("@BigScrew", SqlDbType.Real).Value = Convert.ToDouble(BigScrewTB.Text);
-                        query.Parameters.Add("@SmallScrew", SqlDbType.Real).Value = Convert.ToDouble(SmallScrewTB.Text);
-                        query.Parameters.Add("@ProductionCompleted", SqlDbType.Real).Value = 0;
-                        query.Parameters.Add("@HeatCompleted", SqlDbType.Real).Value = 0;
                         query.Parameters.Add("@OrderDate", SqlDbType.Date).Value = OrderDate.SelectedDate;
                         query.Parameters.Add("@DueDate", SqlDbType.Date).Value = DueDate.SelectedDate;
-                        query.Parameters.Add("@ManufactureTeam", SqlDbType.NVarChar).Value = ManufactureTeamTB.Text;
                         query.Parameters.Add("@Customer", SqlDbType.NVarChar).Value = Convert.ToString(CustomerTB.Text);
 
                         int rowsAffected = query.ExecuteNonQuery();
 
                         if (rowsAffected > 0)
-                        { 
-                            await _hubConnection.InvokeAsync("SendOrderEntry");
+                        {  
+                            if (_hubConnection != null)
+                            {
+                                await _hubConnection.InvokeAsync("SendOrdersPageUpdate");
+                                await _hubConnection.InvokeAsync("SendDeliveriesPageUpdate");
+                                await _hubConnection.StopAsync();
+                            }
                             conn.Close();
                             this.Close();
                         }
@@ -214,6 +214,7 @@ namespace Astakona
           
         private void CancelButton_Clicked(object sender, RoutedEventArgs e)
         {
+            _hubConnection?.StopAsync();
             this.Close();
         }
     }

@@ -26,13 +26,13 @@ namespace Astakona
     {
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
         private HubConnection _hubConnection;
-        public int ScrewID;
+        public int MaterialID;
 
-        public UpdateScrewStock(int screwID)
+        public UpdateScrewStock(int MaterialID)
         {
             InitializeComponent();
-            this.ScrewID = screwID;
-            LoadScrewsStock();
+            this.MaterialID = MaterialID;
+            LoadMaterialsStock();
             InitializeSignalR();
         }
         private async void InitializeSignalR()
@@ -45,15 +45,15 @@ namespace Astakona
             await _hubConnection.StartAsync();
         }
 
-        public void LoadScrewsStock()
+        public void LoadMaterialsStock()
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(connection))
                 {
                     conn.Open();
-                    SqlCommand query = new SqlCommand("SELECT * FROM Screws WHERE ScrewID=@ScrewID", conn);
-                    query.Parameters.Add("@ScrewID", SqlDbType.Int).Value = this.ScrewID;
+                    SqlCommand query = new SqlCommand("SELECT * FROM Materials WHERE MaterialID=@MaterialID", conn);
+                    query.Parameters.Add("@MaterialID", SqlDbType.Int).Value = this.MaterialID;
                     SqlDataReader reader = query.ExecuteReader();
 
                     while (reader.Read())
@@ -69,7 +69,7 @@ namespace Astakona
             }
         }
 
-        private void ScrewTB_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void MaterialTB_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
@@ -85,26 +85,33 @@ namespace Astakona
                     return;
                 }
 
-                using (SqlConnection conn = new SqlConnection(this.connection))
+                else
                 {
-                    conn.Open();
-                    using (SqlCommand query = new SqlCommand("UPDATE Screws SET Stock=@Stock WHERE ScrewID=@ScrewID", conn))
+                    using (SqlConnection conn = new SqlConnection(this.connection))
                     {
-                        query.Parameters.Add("@Stock", SqlDbType.Int).Value = Convert.ToDouble(ScrewTB.Text);
-                        query.Parameters.Add("@ScrewID", SqlDbType.Int).Value = this.ScrewID;
-                        int rowsAffected = query.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
+                        conn.Open();
+                        using (SqlCommand query = new SqlCommand("UPDATE Materials SET Stock=@Stock WHERE MaterialID=@MaterialID", conn))
                         {
-                            await _hubConnection.InvokeAsync("SendScrewUpdate");
-                            conn.Close();
-                            this.Close();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to add order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                            query.Parameters.Add("@Stock", SqlDbType.Int).Value = Convert.ToDouble(ScrewTB.Text);
+                            query.Parameters.Add("@MaterialID", SqlDbType.Int).Value = this.MaterialID;
+                            int rowsAffected = query.ExecuteNonQuery();
 
+                            if (rowsAffected > 0)
+                            {
+                                if(_hubConnection != null)
+                                {
+                                    await _hubConnection.InvokeAsync("SendOrdersPageUpdate");
+                                    await _hubConnection.InvokeAsync("SendMaterialsPageUpdate");
+                                    await _hubConnection.StopAsync();
+                                }
+                                
+                                conn.Close();
+                                this.Close();
+                            }
+
+                            else
+                                MessageBox.Show("Failed to add order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
             }
@@ -116,6 +123,7 @@ namespace Astakona
 
         private void CancelButton_Clicked(object sender, RoutedEventArgs e)
         {
+            _hubConnection?.StopAsync();
             this.Close();
         }
     }

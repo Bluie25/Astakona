@@ -265,16 +265,50 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ScrewStockPage.xaml.cs">
-      <DependentUpon>ScrewStockPage.xaml</DependentUpon>
+    <Compile Include="AccountPage.xaml.cs">
+      <DependentUpon>AccountPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddPallet.xaml.cs">
+      <DependentUpon>AddPallet.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeliveryPage.xaml.cs">
+      <DependentUpon>DeliveryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MaterialPage.xaml.cs">
+      <DependentUpon>MaterialPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PalletDetails.cs" />
+    <Compile Include="PalletPage.xaml.cs">
+      <DependentUpon>PalletPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateDelivery.xaml.cs">
+      <DependentUpon>UpdateDelivery.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UpdatePallet.xaml.cs">
+      <DependentUpon>UpdatePallet.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateAccount.xaml.cs">
+      <DependentUpon>UpdateAccount.xaml</DependentUpon>
     </Compile>
     <Compile Include="UpdateOrder.xaml.cs">
       <DependentUpon>UpdateOrder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UpdateScrewStock.xaml.cs">
-      <DependentUpon>UpdateScrewStock.xaml</DependentUpon>
+    <Compile Include="UpdateMaterial.xaml.cs">
+      <DependentUpon>UpdateMaterial.xaml</DependentUpon>
     </Compile>
+    <Page Include="AccountPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddOrder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddPallet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeliveryPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -305,7 +339,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ScrewStockPage.xaml">
+    <Page Include="MaterialPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PalletPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdateDelivery.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdatePallet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdateAccount.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -313,7 +363,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UpdateScrewStock.xaml">
+    <Page Include="UpdateMaterial.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

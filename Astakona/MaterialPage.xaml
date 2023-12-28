@@ -1,12 +1,12 @@
-﻿<Window x:Class="Astakona.Dashboard"
+﻿<Window x:Class="Astakona.MaterialPage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Astakona"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:Astakona"
         mc:Ignorable="d"
-        Title="Astakona" 
+        Title="Stock Material" 
         Height="768" 
         Width="1366"
         WindowState="Maximized">
@@ -62,7 +62,7 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <Button Background="#2e3746" Foreground="White" Style="{StaticResource PanelButtonStyle}" IsEnabled="False">
+                <Button Style="{StaticResource PanelButtonStyle}" Click="HomeButtonClick" >
                     <TextBlock Text="Home" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
@@ -80,7 +80,7 @@
             </Grid>
 
             <Grid Grid.Row="4" Background="#262f3c">
-                <Button Style="{StaticResource PanelButtonStyle}" Click="MaterialButtonClick">
+                <Button Background="#2e3746" Foreground="White" Style="{StaticResource PanelButtonStyle}" IsEnabled="False">
                     <TextBlock Text="Stock Material" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
@@ -107,6 +107,8 @@
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
+                <RowDefinition Height="300"/>
+                <RowDefinition Height="300"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
@@ -117,8 +119,28 @@
                     </TextBlock.Text>
                 </TextBlock>
             </Border>
-
+            
             <Grid Grid.Row="1" Background="#eff2f6">
+                <Border BorderBrush="Black" BorderThickness="2" Height="200" HorizontalAlignment="Left" CornerRadius="5" Margin="50 0 0 0">
+                    <Image Source="/2.5 Inch Nail.jpg"/>
+                </Border>
+                <Label Content="Paku 2 1/2 Inci" FontSize="25" VerticalAlignment="Center" Margin="280 0 0 0"/>
+                <Label Content="Sisa Stock:" FontSize="25" VerticalAlignment="Center" Margin="550 0 0 0"/>
+                <TextBox x:Name="BigScrewTB" FontSize="25" Height="35" Width="200" Margin="350 0 0 0" IsReadOnly="True" IsHitTestVisible="False"/>
+                <Button Content="Update" FontSize="30" Width="200" Height="100" Margin="900 0 0 0" Click="BigScrewUpdateButton_Clicked"/>
+            </Grid>
+
+            <Grid Grid.Row="2" Background="#eff2f6">
+                <Border BorderBrush="Black" BorderThickness="2" Height="200" HorizontalAlignment="Left" CornerRadius="5" Margin="50 0 0 0">
+                    <Image Source="/2 Inch Nail.jpeg"/>
+                </Border>
+                <Label Content="Paku 2 Inci" FontSize="25" VerticalAlignment="Center" Margin="280 0 0 0"/>
+                <Label Content="Sisa Stock:" FontSize="25" VerticalAlignment="Center" Margin="550 0 0 0"/>
+                <TextBox x:Name="SmallScrewTB" FontSize="25" Height="35" Width="200" Margin="350 0 0 0" IsReadOnly="True" IsHitTestVisible="False"/>
+                <Button Content="Update" FontSize="30" Width="200" Height="100" Margin="900 0 0 0" Click="SmallScrewUpdateButton_Clicked"/>
+            </Grid>
+
+            <Grid Grid.Row="3" Background="#eff2f6">
             </Grid>
         </Grid>
     </Grid>

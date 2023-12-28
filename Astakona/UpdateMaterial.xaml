@@ -24,7 +24,7 @@
         </Grid>
 
         <Grid Grid.Row="0" Grid.Column="1">
-            <TextBox x:Name="ScrewTB" Height="20" Width="150" FontSize="15" PreviewTextInput="ScrewTB_PreviewTextInput" HorizontalAlignment="Left"/>
+            <TextBox x:Name="ScrewTB" Height="20" Width="150" FontSize="15" PreviewTextInput="MaterialTB_PreviewTextInput" HorizontalAlignment="Left"/>
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="0">

@@ -1,0 +1,63 @@
+﻿<Window x:Class="Astakona.UpdateDelivery"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Astakona"
+        mc:Ignorable="d"
+        Title="UpdateDelivery" Height="450" Width="600">
+    
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="110"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="Nomor Invoice:"/>
+            <TextBox x:Name="InvoiceNoTB" Background="#A9A9A9" Height="20" Width="200" HorizontalAlignment="Right" Margin="0 0 10 0" IsReadOnly="True" IsHitTestVisible="False"/>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="Nama Barang:"/>
+            <TextBox x:Name="NameTB" Background="#A9A9A9" Height="20" Width="200" HorizontalAlignment="Right" Margin="0 0 10 0" IsReadOnly="True" IsHitTestVisible="False"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="Customer:" Margin="26 0 0 0"/>
+            <TextBox x:Name="CustomerTB" Background="#A9A9A9" Height="20" Width="200" HorizontalAlignment="Right" Margin="0 0 10 0" IsReadOnly="True" IsHitTestVisible="False"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="Ready stock / order:"/>
+            <TextBox x:Name="ReadyStockTB" Background="#A9A9A9" Height="20" Width="100" HorizontalAlignment="Right" Margin="0 0 80 0" IsReadOnly="True" IsHitTestVisible="False"/>
+            <Label x:Name="AmountLB" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Margin="220 0 0 5"/>
+        </Grid>
+        
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Label HorizontalAlignment="Center" VerticalAlignment="Top" Content="Tanggal jatuh tempo:"/>
+            <Calendar x:Name="DueDate" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 0 0" IsHitTestVisible="False"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kirim:" Margin="75 5 0 0"/>
+            <TextBox x:Name="DeliveredTB" Height="20" Width="170" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="120 10 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Margin="220 0 0 5"/>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Button Content="Cancel" Width="150" Height="80" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontWeight="Bold" Margin="0 0 0 20" Click="CancelButton_Clicked"/>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="1">
+            <Button Content="Update" Width="150" Height="80" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontWeight="Bold" Margin="0 0 0 20" Click="UpdateButton_Clicked"/>
+        </Grid>
+    </Grid>
+</Window>

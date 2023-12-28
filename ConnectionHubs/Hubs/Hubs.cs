@@ -3,23 +3,28 @@ using System.Threading.Tasks;
 
 public class Hubs : Hub
 {
-    public async Task SendOrderEntry()
+    public async Task SendOrdersPageUpdate()
     {
-        await Clients.All.SendAsync("ReceiveOrderEntry");
+        await Clients.All.SendAsync("ReceiveOrdersPageUpdate");
     }
 
-    public async Task SendOrderUpdate()
+    public async Task SendMaterialsPageUpdate()
     {
-        await Clients.All.SendAsync("ReceiveOrderUpdate");
+        await Clients.All.SendAsync("ReceiveMaterialsPageUpdate");
     }
 
-    public async Task SendOrderDelete() 
+    public async Task SendPalletsPageUpdate()
     {
-        await Clients.All.SendAsync("ReceiveOrderDelete");
+        await Clients.All.SendAsync("ReceivePalletsPageUpdate");
     }
 
-    public async Task SendScrewUpdate()
+    public async Task SendDeliveriesPageUpdate()
     {
-        await Clients.All.SendAsync("ReceiveScrewUpdate");
+        await Clients.All.SendAsync("ReceiveDeliveriesPageUpdate");
+    }
+
+    public async Task SendAccountsPageUpdate()
+    {
+        await Clients.Caller.SendAsync("ReceiveAccountsPageUpdate");
     }
 }

@@ -28,16 +28,38 @@ namespace Astakona
 
         private void OrderButtonClick(object sender, RoutedEventArgs e)
         {
-            OrderPage orderPage = new OrderPage();
+            OrderPage OrderPage = new OrderPage();
             this.Close();
-            orderPage.Show();
+            OrderPage.Show();
         }
 
-        private void ScrewStockButtonClick(object sender, RoutedEventArgs e)
+        private void DeliveryButtonClick(object sender, RoutedEventArgs e)
         {
-            ScrewStockPage ScrewStockPage = new ScrewStockPage();
+            DeliveryPage DeliveryPage = new DeliveryPage();
             this.Close();
-            ScrewStockPage.Show();
+            DeliveryPage.Show();
+        }
+
+
+        private void MaterialButtonClick(object sender, RoutedEventArgs e)
+        {
+            MaterialPage MaterialPage = new MaterialPage();
+            this.Close();
+            MaterialPage.Show();
+        }
+
+        private void PalletButtonClick(object sender, RoutedEventArgs e)
+        {
+            PalletPage PalletPage = new PalletPage();
+            this.Close();
+            PalletPage.Show();
+        }
+
+        private void AccountButtonClick(object sender, RoutedEventArgs e)
+        {
+            AccountPage AccountPage = new AccountPage();
+            this.Close();
+            AccountPage.Show();
         }
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)

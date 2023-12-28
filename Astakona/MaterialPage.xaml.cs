@@ -22,15 +22,15 @@ namespace Astakona
     /// <summary>
     /// Interaction logic for ScrewStockPage.xaml
     /// </summary>
-    public partial class ScrewStockPage : Window
+    public partial class MaterialPage : Window
     {
         private HubConnection _hubConnection;
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
 
-        public ScrewStockPage()
+        public MaterialPage()
         {
             InitializeComponent();
-            LoadScrewsStock();
+            LoadMaterialsStock();
             InitializeSignalR();
 
         }
@@ -44,30 +44,28 @@ namespace Astakona
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             await _hubConnection.StartAsync();
 
-            _hubConnection.On("ReceiveScrewUpdate", () =>
+            _hubConnection.On("ReceiveMaterialsPageUpdate", () =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    LoadScrewsStock();
+                    LoadMaterialsStock();
                 });
             });
-
-
         }
 
-        public void LoadScrewsStock()
+        public void LoadMaterialsStock()
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(connection))
                 {
                     conn.Open();
-                    SqlCommand query = new SqlCommand("SELECT * FROM Screws", conn);
+                    SqlCommand query = new SqlCommand("SELECT * FROM Materials", conn);
                     SqlDataReader reader = query.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        switch (Convert.ToInt32(reader["ScrewID"]))
+                        switch (Convert.ToInt32(reader["MaterialID"]))
                         {
                             case 1:
                                 BigScrewTB.Text = Convert.ToString(reader["Stock"]);
@@ -85,32 +83,6 @@ namespace Astakona
             }
         }
 
-        private void HomePageButton_Click(object sender, RoutedEventArgs e)
-        {
-            Dashboard Dashboard = new Dashboard();
-            if (_hubConnection != null)
-            {
-                _hubConnection.StopAsync();
-            }
-            this.Close();
-            Dashboard.Show();
-        }
-
-        private void OrderButtonClick(object sender, RoutedEventArgs e)
-        {
-            OrderPage orderPage = new OrderPage();
-            this.Close();
-            orderPage.Show();
-        }
-
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
-        {
-            ((App)Application.Current).ClearLoggedInUserData();
-            Login Login = new Login();
-            this.Close();
-            Login.Show();
-        }
-
         private void BigScrewUpdateButton_Clicked(object sender, RoutedEventArgs e)
         {
             UpdateScrewStock UpdateScrewStock = new UpdateScrewStock(1);
@@ -121,6 +93,55 @@ namespace Astakona
         {
             UpdateScrewStock UpdateScrewStock = new UpdateScrewStock(2);
             UpdateScrewStock.Show();
+        }
+
+        private void HomeButtonClick(object sender, RoutedEventArgs e)
+        {
+            Dashboard Dashboard = new Dashboard();
+            _hubConnection?.StopAsync();
+            this.Close();
+            Dashboard.Show();
+        }
+
+        private void OrderButtonClick(object sender, RoutedEventArgs e)
+        {
+            OrderPage OrderPage = new OrderPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            OrderPage.Show();
+        }
+
+        private void DeliveryButtonClick(object sender, RoutedEventArgs e)
+        {
+            DeliveryPage DeliveryPage = new DeliveryPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            DeliveryPage.Show();
+        }
+
+        private void PalletButtonClick(object sender, RoutedEventArgs e)
+        {
+            PalletPage PalletPage = new PalletPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            PalletPage.Show();
+        }
+
+        private void AccountButtonClick(object sender, RoutedEventArgs e)
+        {
+            AccountPage AccountPage = new AccountPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            AccountPage.Show();
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((App)Application.Current).ClearLoggedInUserData();
+            Login Login = new Login();
+            _hubConnection?.StopAsync();
+            this.Close();
+            Login.Show();
         }
     }
 }

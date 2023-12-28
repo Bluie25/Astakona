@@ -7,17 +7,14 @@
       xmlns:local="clr-namespace:Astakona"
       mc:Ignorable="d"
       Title="Tambah Order" 
-      Height="615" 
-      Width="500">
+      Height="470" 
+      Width="600">
 
     <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="120"/>
         </Grid.RowDefinitions>
@@ -28,73 +25,52 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Row="0" Grid.Column="0">
-            <Label HorizontalAlignment="Right" VerticalAlignment="Center" Content="No. Invoice: "/>
+            <TextBox x:Name="InvoiceNoTB" HorizontalAlignment="Right" Height="20" Width="200" Margin="0 0 20 0"/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="No. Invoice: "/>
         </Grid>
 
         <Grid Grid.Row="0" Grid.Column="1">
-            <TextBox x:Name="InvoiceNoTB" Height="20" Width="230"/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="Nama Barang: "/>
+            <ComboBox x:Name="ComboBox" HorizontalAlignment="Right" Height="20" Width="200" Margin="0 0 10 0" SelectionChanged="ComboBox_SelectionChanged"/>
         </Grid>
 
         
         <Grid Grid.Row="1" Grid.Column="0">
-            <Label HorizontalAlignment="Right" VerticalAlignment="Center" Content="Nama Barang: "/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="Customer:" Margin="10 0 0 0"/>
+            <TextBox x:Name="CustomerTB" HorizontalAlignment="Right" Height="20" Width="200" Margin="0 0 20 0"/>
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="1">
-            <ComboBox x:Name="ComboBox" Height="20" Width="230" SelectionChanged="ComboBox_SelectionChanged"/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="Jumlah Order:"/>
+            <TextBox x:Name="AmountTB" HorizontalAlignment="Right" Height="20" Width="200" Margin="0 0 10 0" Text="0" TextChanged="AmountTB_TextChanged" PreviewTextInput="AmountTB_PreviewTextInput"/>
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="0">
-            <Label HorizontalAlignment="Right" VerticalAlignment="Center" Content="Team yang mengerjakan: "/>
-        </Grid>
-
-        <Grid Grid.Row="2" Grid.Column="1">
-            <TextBox x:Name="ManufactureTeamTB" Height="20" Width="230"/>
-        </Grid>
-
-        
-        <Grid Grid.Row="3" Grid.Column="0">
-            <Label HorizontalAlignment="Right" VerticalAlignment="Center">Jumlah Order:</Label>
-        </Grid>
-
-        <Grid Grid.Row="3" Grid.Column="1">
-            <TextBox x:Name="AmountTB" Height="20" Width="230" Text="0" TextChanged="AmountTB_TextChanged" PreviewTextInput="AmountTB_PreviewTextInput"/>
-        </Grid>
-
-        <Grid Grid.Row="4" Grid.Column="0">
-            <Label HorizontalAlignment="Left" VerticalAlignment="Center">Total paku besar:</Label>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Margin="55 0 0 0" Content="Total paku besar:"/>
             <TextBox x:Name="BigScrewTB" Background="#A9A9A9" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="120" Margin="0 0 20 0" IsReadOnly="True"/>
         </Grid>
-
-        <Grid Grid.Row="4" Grid.Column="1">
-            <Label HorizontalAlignment="Left" VerticalAlignment="Center">Total paku kecil:</Label>
+        
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Margin="60 0 0 0" Content="Total paku kecil:"/>
             <TextBox x:Name="SmallScrewTB" Background="#A9A9A9" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="120" Margin="0 0 20 0" IsReadOnly="True"/>
         </Grid>
 
-        <Grid Grid.Row="5" Grid.Column="0">
-            <Label HorizontalAlignment="Right" VerticalAlignment="Center">Customer: </Label>
-        </Grid>
-
-        <Grid Grid.Row="5" Grid.Column="1">
-            <TextBox x:Name="CustomerTB" Height="20" Width="230"></TextBox>
-        </Grid>
-
-        <Grid Grid.Row="6" Grid.Column="0">
-            <Label HorizontalAlignment="Center" VerticalAlignment="Top">Tanggal order:</Label>
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Label HorizontalAlignment="Center" VerticalAlignment="Top" Content="Tanggal Order:"/>
             <Calendar x:Name="OrderDate" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 20 0 0" SelectedDate="{x:Static sys:DateTime.Now}" />
         </Grid>
         
-        <Grid Grid.Row="6" Grid.Column="1">
-            <Label HorizontalAlignment="Center" VerticalAlignment="Top">Tanggal jatuh tempo:</Label>
+        <Grid Grid.Row="3" Grid.Column="1">
+            <Label HorizontalAlignment="Center" VerticalAlignment="Top" Content="Tanggal jatuh tempo:"/>
             <Calendar x:Name="DueDate" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 20 0 0" SelectedDate="{x:Static sys:DateTime.Now}" />
         </Grid>
 
-        <Grid Grid.Row="7" Grid.Column="0">
-            <Button Content="Cancel" Width="150" Height="80" HorizontalAlignment="Center" FontWeight="Bold" Click="CancelButton_Clicked"/>
+        <Grid Grid.Row="4" Grid.Column="0">
+            <Button Content="Cancel" Width="200" Height="80" HorizontalAlignment="Center" FontWeight="Bold" Click="CancelButton_Clicked"/>
         </Grid>
 
-        <Grid Grid.Row="7" Grid.Column="1">
-            <Button Content="Add" Width="150" Height="80" HorizontalAlignment="Center" FontWeight="Bold" Click="AddButton_Clicked"/>
+        <Grid Grid.Row="4" Grid.Column="1">
+            <Button Content="Add" Width="200" Height="80" HorizontalAlignment="Center" FontWeight="Bold" Click="AddButton_Clicked"/>
         </Grid>
     </Grid>
 </Window>

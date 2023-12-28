@@ -31,17 +31,6 @@ namespace Astakona
         private Button DeleteOrderBtn;
         public List<OrdersDetails> Orders { get; set; }
 
-        // Add this method in your code-behind
-        private void UpdateOrderBtn_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.UpdateOrderBtn = (Button)sender;
-        }
-
-        private void DeleteOrderBtn_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.DeleteOrderBtn = (Button)sender;
-        }
-
         public OrderPage()
         {
             InitializeComponent();
@@ -50,15 +39,9 @@ namespace Astakona
             LoadPage();
             DataContext = this;
 
-
-            //To disable features based on accounts access authorization
             var LoggedInUser = ((App)Application.Current).LoggedInUser;
             if (!LoggedInUser.AddOrder)
                 AddOrderBtn.IsEnabled = false;
-            /*if(this.UpdateOrderBtn != null && !LoggedInUser.UpdateOrder)
-                this.UpdateOrderBtn.IsEnabled = false;
-            if(this.DeleteOrderBtn != null && !LoggedInUser.DeleteOrder)
-                this.DeleteOrderBtn.IsEnabled = false;*/
         }
 
         private async void InitializeSignalR()
@@ -70,31 +53,7 @@ namespace Astakona
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             await _hubConnection.StartAsync();
 
-            _hubConnection.On("ReceiveOrderEntry", () =>
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    LoadPage();
-                });
-            });
-
-            _hubConnection.On("ReceiveOrderUpdate", () =>
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    LoadPage();
-                });
-            });
-
-            _hubConnection.On("ReceiveOrderDelete", () =>
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    LoadPage();
-                });
-            });
-
-            _hubConnection.On("ReceiveScrewUpdate", () =>
+            _hubConnection.On("ReceiveOrdersPageUpdate", () =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -115,7 +74,7 @@ namespace Astakona
                     {
                         try
                         {
-                            SqlCommand OrdersQuery = new SqlCommand("SELECT * FROM Orders", conn, transaction);
+                            SqlCommand OrdersQuery = new SqlCommand("SELECT * FROM Orders WHERE IsFinished=0", conn, transaction);
                             SqlDataReader OrdersReader = OrdersQuery.ExecuteReader();
                             Orders.Clear();
 
@@ -128,30 +87,32 @@ namespace Astakona
                                     InventoryID = Convert.ToInt32(OrdersReader["InventoryID"]),
                                     InventoryName = Convert.ToString(OrdersReader["InventoryName"]),
                                     Amount = Convert.ToDouble(OrdersReader["Amount"]),
-                                    BigScrew = Convert.ToDouble(OrdersReader["BigScrew"]),
-                                    SmallScrew = Convert.ToDouble(OrdersReader["SmallScrew"]),
                                     ProductionCompleted = Convert.ToDouble(OrdersReader["ProductionCompleted"]),
-                                    HeatCompleted = Convert.ToDouble(OrdersReader["HeatCompleted"]),
-                                    Customer = Convert.ToString(OrdersReader["Customer"]),
+                                    HTBTS = Convert.ToDouble(OrdersReader["HTTBS"]),
+                                    HTEKS = Convert.ToDouble(OrdersReader["HTEKS"]),
+                                    HTKKS = Convert.ToDouble(OrdersReader["HTKKS"]),
+                                    TotalHeatCompleted = Convert.ToDouble(OrdersReader["HTEKS"]) + Convert.ToDouble(OrdersReader["HTBTS"]) + Convert.ToDouble(OrdersReader["HTKKS"]),
                                     OrderDate = OrdersReader.GetDateTime(OrdersReader.GetOrdinal("OrderDate")),
                                     DueDate = OrdersReader.GetDateTime(OrdersReader.GetOrdinal("DueDate")),
-                                    ManufactureTeam = OrdersReader.GetString(OrdersReader.GetOrdinal("ManufactureTeam"))
+                                    Customer = Convert.ToString(OrdersReader["Customer"]),
+                                    ManufactureTeam = Convert.ToString(OrdersReader["ManufactureTeam"]),
+                                    Delivered = Convert.ToDouble(OrdersReader["Delivered"])
                                 });
                             }
 
                             OrdersReader.Close();
-                            SqlCommand ScrewsQuery = new SqlCommand("SELECT * FROM Screws", conn, transaction);
-                            SqlDataReader ScrewsReader = ScrewsQuery.ExecuteReader();
+                            SqlCommand MaterialsQuery = new SqlCommand("SELECT * FROM Materials", conn, transaction);
+                            SqlDataReader MaterialsReader = MaterialsQuery.ExecuteReader();
 
-                            while (ScrewsReader.Read())
+                            while (MaterialsReader.Read())
                             {
-                                switch (Convert.ToDouble(ScrewsReader["ScrewID"]))
+                                switch (Convert.ToDouble(MaterialsReader["MaterialID"]))
                                 {
                                     case 1:
-                                        BigScrewTB.Text = Convert.ToString(ScrewsReader["Stock"]);
+                                        BigScrewTB.Text = Convert.ToString(MaterialsReader["Stock"]);
                                         break;
                                     case 2:
-                                        SmallScrewTB.Text = Convert.ToString(ScrewsReader["Stock"]);
+                                        SmallScrewTB.Text = Convert.ToString(MaterialsReader["Stock"]);
                                         break;
                                 }
                             }
@@ -173,31 +134,54 @@ namespace Astakona
             }
         }
 
-        private void HomePageButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateOrderBtn_Loaded(object sender, RoutedEventArgs e)
         {
-            Dashboard Dashboard = new Dashboard();
-            if (_hubConnection != null)
+            this.UpdateOrderBtn = (Button)sender;
+        }
+
+        private void DeleteOrderBtn_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.DeleteOrderBtn = (Button)sender;
+        }
+
+        private void ListViewItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            ListViewItem listViewItem = (ListViewItem)sender;
+            Button updateButton = FindChild<Button>(listViewItem, "UpdateOrderBtn");
+            Button deleteButton = FindChild<Button>(listViewItem, "DeleteOrderBtn");
+
+            if (updateButton != null && deleteButton != null)
             {
-                _hubConnection.StopAsync();
+                var loggedInUser = ((App)Application.Current).LoggedInUser;
+
+                if (!loggedInUser.UpdateOrder)
+                    updateButton.IsEnabled = false;
+
+                if (!loggedInUser.DeleteOrder)
+                    deleteButton.IsEnabled = false;
             }
-            this.Close();
-            Dashboard.Show();
         }
 
-        private void ScrewStockButtonClick(object sender, RoutedEventArgs e)
+        private T FindChild<T>(DependencyObject parent, string childName) where T : DependencyObject
         {
-            ScrewStockPage ScrewStockPage = new ScrewStockPage();
-            this.Close();
-            ScrewStockPage.Show();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T && ((FrameworkElement)child).Name == childName)
+                {
+                    return (T)child;
+                }
+                else
+                {
+                    T childOfChild = FindChild<T>(child, childName);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
         }
 
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
-        {
-            ((App)Application.Current).ClearLoggedInUserData();
-            Login Login = new Login();
-            this.Close();
-            Login.Show();
-        }
+
 
         private void AddOrderButton_Click(object sender, RoutedEventArgs e)
         {
@@ -243,7 +227,8 @@ namespace Astakona
                                     DeleteCommand.ExecuteNonQuery();
                                 }
 
-                                await _hubConnection.InvokeAsync("SendOrderDelete");
+                                await _hubConnection.InvokeAsync("SendDeliveriesPageUpdate");
+                                await _hubConnection.InvokeAsync("SendOrdersPageUpdate");
                                 conn.Close();
                             }
                         }
@@ -257,41 +242,52 @@ namespace Astakona
             }
         }
 
-        private void ListViewItem_Loaded(object sender, RoutedEventArgs e)
+        private void HomeButton_Click(object sender, RoutedEventArgs e)
         {
-            ListViewItem listViewItem = (ListViewItem)sender;
-            Button updateButton = FindChild<Button>(listViewItem, "UpdateOrderBtn");
-            Button deleteButton = FindChild<Button>(listViewItem, "DeleteOrderBtn");
-
-            if (updateButton != null && deleteButton != null)
-            {
-                var loggedInUser = ((App)Application.Current).LoggedInUser;
-
-                if (!loggedInUser.UpdateOrder)
-                    updateButton.IsEnabled = false;
-
-                if (!loggedInUser.DeleteOrder)
-                    deleteButton.IsEnabled = false;
-            }
+            Dashboard Dashboard = new Dashboard();
+            _hubConnection?.StopAsync();
+            Dashboard.Show();
         }
 
-        private T FindChild<T>(DependencyObject parent, string childName) where T : DependencyObject
+        private void DeliveryButtonClick(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T && ((FrameworkElement)child).Name == childName)
-                {
-                    return (T)child;
-                }
-                else
-                {
-                    T childOfChild = FindChild<T>(child, childName);
-                    if (childOfChild != null)
-                        return childOfChild;
-                }
-            }
-            return null;
+            DeliveryPage DeliveryPage = new DeliveryPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            DeliveryPage.Show();
+        }
+
+        private void MaterialButtonClick(object sender, RoutedEventArgs e)
+        {
+            MaterialPage MaterialPage = new MaterialPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            MaterialPage.Show();
+        }
+
+        private void PalletButtonClick(object sender, RoutedEventArgs e)
+        {
+            PalletPage PalletPage = new PalletPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            PalletPage.Show();
+        }
+
+        private void AccountButtonClick(object sender, RoutedEventArgs e)
+        {
+            AccountPage AccountPage = new AccountPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            AccountPage.Show();
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((App)Application.Current).ClearLoggedInUserData();
+            Login Login = new Login();
+            _hubConnection?.StopAsync();
+            this.Close();
+            Login.Show();
         }
     }
 }

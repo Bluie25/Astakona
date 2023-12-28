@@ -56,7 +56,11 @@ namespace Astakona
                                     AccessSalaries = reader.GetBoolean(reader.GetOrdinal("AccessSalaries")),
                                     AddOrder = reader.GetBoolean(reader.GetOrdinal("AddOrder")),
                                     UpdateOrder = reader.GetBoolean(reader.GetOrdinal("UpdateOrder")),
-                                    DeleteOrder = reader.GetBoolean(reader.GetOrdinal("DeleteOrder"))};
+                                    DeleteOrder = reader.GetBoolean(reader.GetOrdinal("DeleteOrder")),
+                                    AddInventory = reader.GetBoolean(reader.GetOrdinal("AddInventory")),
+                                    UpdateInventory = reader.GetBoolean(reader.GetOrdinal("UpdateInventory")),
+                                    DeleteInventory = reader.GetBoolean(reader.GetOrdinal("DeleteInventory")),
+                                };
 
                                 ((App)Application.Current).LoggedInUser = LoggedInUser;
                                 Dashboard Dashboard = new Dashboard();
