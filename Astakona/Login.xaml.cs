@@ -53,7 +53,7 @@ namespace Astakona
                                     Password = reader.GetString(reader.GetOrdinal("Password")),
                                     Salary = reader.GetFloat(reader.GetOrdinal("Salary")),
                                     ManageAccounts = reader.GetBoolean(reader.GetOrdinal("ManageAccounts")),
-                                    AccessSalaries = reader.GetBoolean(reader.GetOrdinal("AccessSalaries")),
+                                    ManageSalaries = reader.GetBoolean(reader.GetOrdinal("ManageSalaries")),
                                     AddOrder = reader.GetBoolean(reader.GetOrdinal("AddOrder")),
                                     UpdateOrder = reader.GetBoolean(reader.GetOrdinal("UpdateOrder")),
                                     DeleteOrder = reader.GetBoolean(reader.GetOrdinal("DeleteOrder")),

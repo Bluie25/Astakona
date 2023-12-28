@@ -14,7 +14,7 @@ namespace Astakona
         public string Password { get; set; }
         public double Salary { get; set; }
         public bool ManageAccounts { get; set; }
-        public bool AccessSalaries { get; set; }
+        public bool ManageSalaries { get; set; }
         public bool AddOrder { get; set; }
         public bool UpdateOrder { get; set; }
         public bool DeleteOrder { get; set; }
