@@ -30,16 +30,8 @@ namespace Astakona
         public AccountPage()
         {
             InitializeComponent();
-            LoadPage();
             InitializeSignalR();
-        }
-
-        public void LoadPage()
-        {
-            NameTB.Text = ((App)Application.Current).LoggedInUser.Name;
-            UsernameTB.Text = ((App)Application.Current).LoggedInUser.Username;
-            PasswordBox.Password = ((App)Application.Current).LoggedInUser.Password;
-            PasswordTB.Text = ((App)Application.Current).LoggedInUser.Password;
+            LoadPage();
         }
 
         private async void InitializeSignalR()
@@ -58,6 +50,14 @@ namespace Astakona
                     LoadPage();
                 });
             });
+        }
+
+        public void LoadPage()
+        {
+            NameTB.Text = ((App)Application.Current).LoggedInUser.Name;
+            UsernameTB.Text = ((App)Application.Current).LoggedInUser.Username;
+            PasswordBox.Password = ((App)Application.Current).LoggedInUser.Password;
+            PasswordTB.Text = ((App)Application.Current).LoggedInUser.Password;
         }
 
         private void ShowButtonClick(object sender, MouseButtonEventArgs e)

@@ -25,6 +25,6 @@ public class Hubs : Hub
 
     public async Task SendAccountsPageUpdate()
     {
-        await Clients.Caller.SendAsync("ReceiveAccountsPageUpdate");
+        await Clients.All.SendAsync("ReceiveAccountsPageUpdate");
     }
 }
