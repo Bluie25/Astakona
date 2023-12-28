@@ -127,7 +127,8 @@
                 <Button Width="120" Height="30" Margin="480 103 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Edit" Click="EditUsernameButtonClick"/>
 
                 <Label FontSize="20" FontFamily="Helvetica" Margin="76 170 0 0" Content="Password:"/>
-                <PasswordBox x:Name="PasswordBox" FontSize="20" Width="250" Height="30" Margin="200 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsEnabled="False" IsHitTestVisible="False"/>
+                <PasswordBox x:Name="PasswordBox" FontSize="20" Width="250" Height="30" Margin="200 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsEnabled="False" IsHitTestVisible="False" Visibility="Visible"/>
+                <TextBox x:Name="PasswordTB" FontSize="20" Width="250" Height="30" Margin="200 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" IsEnabled="False" IsHitTestVisible="False" Visibility="Collapsed"/>
                 <Button Width="60" Height="30" Margin="480 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Show" FontWeight="Bold" PreviewMouseLeftButtonDown="ShowButtonClick" PreviewMouseLeftButtonUp="ShowButtonRelease" />
                 <Button Width="120" Height="30" Margin="570 173 0 0" HorizontalAlignment="Left" VerticalAlignment="Top"  Content="Edit" Click="EditPasswordButtonClick"/>
             </Grid>

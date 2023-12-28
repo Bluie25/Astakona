@@ -39,6 +39,7 @@ namespace Astakona
             NameTB.Text = ((App)Application.Current).LoggedInUser.Name;
             UsernameTB.Text = ((App)Application.Current).LoggedInUser.Username;
             PasswordBox.Password = ((App)Application.Current).LoggedInUser.Password;
+            PasswordTB.Text = ((App)Application.Current).LoggedInUser.Password;
         }
 
         private async void InitializeSignalR()
@@ -61,12 +62,15 @@ namespace Astakona
 
         private void ShowButtonClick(object sender, MouseButtonEventArgs e)
         {
-            PasswordBox.Visibility = Visibility.Visible;
+            PasswordTB.Visibility = Visibility.Visible;
+            PasswordBox.Visibility = Visibility.Collapsed;
         }
 
         private void ShowButtonRelease(object sender, MouseButtonEventArgs e)
         {
-            PasswordBox.Visibility = Visibility.Hidden;
+            PasswordTB.Visibility = Visibility.Collapsed;
+            PasswordBox.Visibility = Visibility.Visible;
+
         }
 
         private void EditUsernameButtonClick(object sender, RoutedEventArgs e)
