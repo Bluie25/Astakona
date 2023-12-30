@@ -269,7 +269,7 @@
                     <Label Content="Triplek 12 mm: " HorizontalAlignment="Left" VerticalAlignment="Center" Margin="830 0 0 0"/>
                     <TextBox x:Name="Triplek12mmTB" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25" Width="100" Margin="920 0 0 0" IsReadOnly="True" IsHitTestVisible="False"/>
 
-                    <Button x:Name="AddOrderBtn" Content="Add Order" Height="30" Width="150" HorizontalAlignment="Right" Margin="0 0 10 0" Click="AddOrderButton_Click"/>
+                    <Button x:Name="AddOrderBtn" Content="Tambah Order" Height="30" Width="150" HorizontalAlignment="Right" Margin="0 0 10 0" Click="AddOrderButton_Click"/>
                 </Grid>
             </Border>
         </Grid>
