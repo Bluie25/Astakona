@@ -96,20 +96,28 @@ namespace Astakona
                     {
                         try
                         {
-                            SqlCommand UpdateOrderQuery = new SqlCommand("UPDATE Orders SET Delivered=@Delivered WHERE OrderID=@OrderID ", conn, transaction);
-                            UpdateOrderQuery.Parameters.Add("@Delivered", SqlDbType.Real).Value = Convert.ToDouble(DeliveredTB.Text);
-                            UpdateOrderQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
-                            int rowsAffected = UpdateOrderQuery.ExecuteNonQuery();
-                            UpdateOrderQuery.Dispose();
+                            SqlCommand UpdateInventoryQuery = new SqlCommand("UPDATE Inventories SET Stock=Stock-@Delivered WHERE InventoryID=@InventoryID", conn, transaction);
+                            UpdateInventoryQuery.Parameters.Add("@Delivered", SqlDbType.Real).Value = Convert.ToDouble(DeliveredTB.Text) - this.SelectedOrder.Delivered;
+                            UpdateInventoryQuery.Parameters.Add("@InventoryID", SqlDbType.Int).Value = this.SelectedOrder.InventoryID;
+                            int rowsAffected = UpdateInventoryQuery.ExecuteNonQuery();
+                            UpdateInventoryQuery.Dispose();
 
                             if (rowsAffected > 0)
                             {
-                                SqlCommand UpdateInventoryQuery = new SqlCommand("UPDATE Inventories SET Stock=Stock-@Delivered WHERE InventoryID=@InventoryID", conn, transaction);
-                                UpdateInventoryQuery.Parameters.Add("@Delivered", SqlDbType.Real).Value = Convert.ToDouble(DeliveredTB.Text) - this.SelectedOrder.Delivered;
-                                UpdateInventoryQuery.Parameters.Add("@InventoryID", SqlDbType.Int).Value = this.SelectedOrder.InventoryID;
-                                UpdateInventoryQuery.ExecuteNonQuery();
-                                UpdateInventoryQuery.Dispose();
+                                SqlCommand UpdateOrderQuery = new SqlCommand("UPDATE Orders SET Delivered=@Delivered, IsFinished=@IsFinished WHERE OrderID=@OrderID ", conn, transaction);
+                                UpdateOrderQuery.Parameters.Add("@Delivered", SqlDbType.Real).Value = Convert.ToDouble(DeliveredTB.Text);
+                                UpdateOrderQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
+                                if(Convert.ToDouble(DeliveredTB.Text) == this.SelectedOrder.Amount)
+                                {
+                                    UpdateOrderQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 1;
+                                    MessageBox.Show("Order untuk Invoice " + this.SelectedOrder.InvoiceNo + " telah terselesaikan", "Finished", MessageBoxButton.OK);
+                                }
 
+                                else
+                                    UpdateOrderQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
+
+                                UpdateOrderQuery.ExecuteNonQuery();
+                                UpdateOrderQuery.Dispose();
                                 transaction.Commit();
 
                                 if (_hubConnection != null)
@@ -125,14 +133,12 @@ namespace Astakona
                             }
 
                             else
-                            {
-                                Console.WriteLine("No rows were updated. Check your condition.");
-                            }
+                                MessageBox.Show("No rows were updated. Check your condition.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
 
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error during transaction: {ex.Message}\n{ex.StackTrace}");
+                            MessageBox.Show($"Error during transaction: {ex.Message}\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             transaction.Rollback();
                         }
                     }

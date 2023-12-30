@@ -58,8 +58,8 @@ namespace Astakona
 
                     while (reader.Read())
                     {
-                        ScrewTB.Text = Convert.ToString(reader["Stock"]);
                         ScrewLB.Content = Convert.ToString(reader["Name"]);
+                        ScrewTB.Text = Convert.ToString(reader["Stock"]);
                     }
                 }
             }
@@ -71,8 +71,18 @@ namespace Astakona
 
         private void MaterialTB_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            TextBox textBox = (TextBox)sender;
+            if (!char.IsDigit(e.Text[0]) && e.Text[0] != '.')
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Text[0] == '.' && textBox.Text.Contains('.'))
+            {
+                e.Handled = true;
+                return;
+            }
         }
 
         private async void UpdateButton_Clicked(object sender, RoutedEventArgs e)
@@ -92,7 +102,7 @@ namespace Astakona
                         conn.Open();
                         using (SqlCommand query = new SqlCommand("UPDATE Materials SET Stock=@Stock WHERE MaterialID=@MaterialID", conn))
                         {
-                            query.Parameters.Add("@Stock", SqlDbType.Int).Value = Convert.ToDouble(ScrewTB.Text);
+                            query.Parameters.Add("@Stock", SqlDbType.Real).Value = Convert.ToDouble(ScrewTB.Text);
                             query.Parameters.Add("@MaterialID", SqlDbType.Int).Value = this.MaterialID;
                             int rowsAffected = query.ExecuteNonQuery();
 

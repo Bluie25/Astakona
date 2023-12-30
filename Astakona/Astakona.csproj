@@ -411,5 +411,14 @@
   <ItemGroup>
     <Resource Include="Gudang.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Triplek18mm.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Triplek15mm.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Triplek12mm.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

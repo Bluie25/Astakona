@@ -31,5 +31,8 @@ namespace Astakona
         public string ManufactureTeam { get; set; }
         public bool IsFinished { get; set; }
         public double Delivered { get; set; }
+        public double Triplek18mm { get; set; }
+        public double Triplek15mm { get; set; }
+        public double Triplek12mm { get; set; }
     }
 }

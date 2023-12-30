@@ -93,7 +93,12 @@
         </Grid>
 
         <Grid Grid.Row="3" Grid.Column="2">
-           
+            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Margin="55 15 0 0" Content="Triplek 18 mm:"/>
+            <TextBox x:Name="Triplek18mmTB"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="130" Margin="150 20 0 0" PreviewTextInput="Triplek18mmTB_PreviewTextInput"/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Margin="55 45 0 0" Content="Triplek 15 mm:"/>
+            <TextBox x:Name="Triplek15mmTB" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="130" Margin="150 50 0 0" PreviewTextInput="Triplek18mmTB_PreviewTextInput"/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Margin="55 75 0 0" Content="Triplek 12 mm:"/>
+            <TextBox x:Name="Triplek12mmTB" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="130" Margin="150 80 0 0" PreviewTextInput="Triplek18mmTB_PreviewTextInput"/>
             <Button Content="Cancel" Width="150" Height="80" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontWeight="Bold" Margin="0 0 0 20" Click="CancelButton_Clicked"/>
         </Grid>
 

@@ -96,7 +96,10 @@ namespace Astakona
                                     DueDate = OrdersReader.GetDateTime(OrdersReader.GetOrdinal("DueDate")),
                                     Customer = Convert.ToString(OrdersReader["Customer"]),
                                     ManufactureTeam = Convert.ToString(OrdersReader["ManufactureTeam"]),
-                                    Delivered = Convert.ToDouble(OrdersReader["Delivered"])
+                                    Delivered = Convert.ToDouble(OrdersReader["Delivered"]),
+                                    Triplek18mm = Convert.ToDouble(OrdersReader["Triplek18mm"]),
+                                    Triplek15mm = Convert.ToDouble(OrdersReader["Triplek15mm"]),
+                                    Triplek12mm = Convert.ToDouble(OrdersReader["Triplek12mm"]),
                                 });
                             }
 
@@ -114,6 +117,15 @@ namespace Astakona
                                     case 2:
                                         SmallScrewTB.Text = Convert.ToString(MaterialsReader["Stock"]);
                                         break;
+                                    case 3:
+                                        Triplek18mmTB.Text = Convert.ToString(MaterialsReader["Stock"]);
+                                        break;
+                                    case 4:
+                                        Triplek15mmTB.Text = Convert.ToString(MaterialsReader["Stock"]);
+                                        break;
+                                    case 5:
+                                        Triplek12mmTB.Text = Convert.ToString(MaterialsReader["Stock"]);
+                                        break;
                                 }
                             }
 
@@ -122,7 +134,7 @@ namespace Astakona
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error during transaction: {ex.Message}\n{ex.StackTrace}");
+                            MessageBox.Show($"Error during transaction: {ex.Message}\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             transaction.Rollback();
                         }
                     }

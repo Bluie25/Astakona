@@ -88,6 +88,10 @@ namespace Astakona
             OrderDate.DisplayDate = this.SelectedOrder.OrderDate;
             DueDate.SelectedDate = this.SelectedOrder.DueDate; 
             DueDate.DisplayDate = this.SelectedOrder.DueDate;
+
+            Triplek18mmTB.Text = this.SelectedOrder.Triplek18mm.ToString("F2");
+            Triplek15mmTB.Text = this.SelectedOrder.Triplek15mm.ToString("F2");
+            Triplek12mmTB.Text = this.SelectedOrder.Triplek12mm.ToString("F2");
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -125,8 +129,18 @@ namespace Astakona
 
         private void NumberTB_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            TextBox textBox = (TextBox)sender;
+            if (!char.IsDigit(e.Text[0]) && e.Text[0] != '.')
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Text[0] == '.' && textBox.Text.Contains('.'))
+            {
+                e.Handled = true;
+                return;
+            }
         }
 
         private void UpdateMaterialsValues()
@@ -177,6 +191,15 @@ namespace Astakona
             if (!double.TryParse(HTKKSTB.Text, out double HTKKSValue))
                 errors.AppendLine("Harap isi jumlah yang sudah di HT di KKS! (boleh 0)\n");
 
+            if (!double.TryParse(Triplek18mmTB.Text, out double T18mm))
+                errors.AppendLine("Harap isi jumlah triplek 18 mm yang terpakai! (boleh 0)\n");
+
+            if (!double.TryParse(Triplek15mmTB.Text, out double T15mm))
+                errors.AppendLine("Harap isi jumlah triplek 18 mm yang terpakai! (boleh 0)\n");
+
+            if (!double.TryParse(Triplek12mmTB.Text, out double T12mm))
+                errors.AppendLine("Harap isi jumlah triplek 18 mm yang terpakai! (boleh 0)\n");
+
             if (PValue > OValue)
                 errors.AppendLine("Jumlah produksi melebihi jumlah order!\n");
 
@@ -224,6 +247,18 @@ namespace Astakona
                                         if (((Convert.ToDouble(ProductionTB.Text) * this.SelectedUnitSmallScrew) - (this.SelectedOrder.ProductionCompleted * this.SelectedUnitSmallScrew)) > Convert.ToDouble(CheckMaterialStockReader["Stock"]))
                                             error += "Stock paku kecil (2 Inci) tidak cukup!\n";
                                         break;
+                                    case 3:
+                                        if ((Convert.ToDouble(Triplek18mmTB.Text) - this.SelectedOrder.Triplek18mm) > Convert.ToDouble(CheckMaterialStockReader["Stock"]))
+                                            error += "Stock triplek 18 mm tidak cukup!\n";
+                                        break;
+                                    case 4:
+                                        if ((Convert.ToDouble(Triplek15mmTB.Text) - this.SelectedOrder.Triplek15mm) > Convert.ToDouble(CheckMaterialStockReader["Stock"]))
+                                            error += "Stock triplek 15 mm tidak cukup!\n";
+                                        break;
+                                    case 5:
+                                        if ((Convert.ToDouble(Triplek12mmTB.Text) - this.SelectedOrder.Triplek12mm) > Convert.ToDouble(CheckMaterialStockReader["Stock"]))
+                                            error += "Stock triplek 12 mm tidak cukup!\n";
+                                        break;
                                 }
                             }
 
@@ -242,7 +277,11 @@ namespace Astakona
                                                                             "DueDate=@DueDate, " +
                                                                             "HTEKS=@HTEKS, " +
                                                                             "HTBTS=@HTBTS, " +
-                                                                            "HTKKS=@HTKKS WHERE OrderID=@OrderID", conn, transaction))
+                                                                            "HTKKS=@HTKKS, " +
+                                                                            "Triplek18mm=@Triplek18mm, " +
+                                                                            "Triplek15mm=@Triplek12mm, " +
+                                                                            "Triplek12mm=@Triplek12mm WHERE OrderID=@OrderID", conn, transaction))
+
                                 {
                                     UpdateOrderQuery.Parameters.Add("@InventoryID", SqlDbType.Int).Value = SelectedInventoryID;
                                     UpdateOrderQuery.Parameters.Add("@InventoryName", SqlDbType.NVarChar).Value = SelectedInventoryName;
@@ -256,7 +295,11 @@ namespace Astakona
                                     UpdateOrderQuery.Parameters.Add("@HTEKS", SqlDbType.Real).Value = Convert.ToDouble(HTEKSTB.Text);
                                     UpdateOrderQuery.Parameters.Add("@HTBTS", SqlDbType.Real).Value = Convert.ToDouble(HTBTSTB.Text);
                                     UpdateOrderQuery.Parameters.Add("@HTKKS", SqlDbType.Real).Value = Convert.ToDouble(HTKKSTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@Triplek18mm", SqlDbType.Real).Value = Convert.ToDouble(Triplek18mmTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@Triplek15mm", SqlDbType.Real).Value = Convert.ToDouble(Triplek15mmTB.Text);
+                                    UpdateOrderQuery.Parameters.Add("@Triplek12mm", SqlDbType.Real).Value = Convert.ToDouble(Triplek12mmTB.Text);
                                     UpdateOrderQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
+
 
                                     int rowsAffected = UpdateOrderQuery.ExecuteNonQuery();
 
@@ -265,12 +308,22 @@ namespace Astakona
                                         UpdateOrderQuery.Dispose();
 
                                         ////UPDATE USED MATERIALS FOR PRODUCTION IN MATERIALS TABLE
-                                        SqlCommand UpdateMaterialStockQuery = new SqlCommand("UPDATE Materials SET Stock = Stock - @UsedMaterials WHERE MaterialID = 1", conn, transaction);
-                                        UpdateMaterialStockQuery.Parameters.Add("@UsedMaterials", SqlDbType.Real).Value = this.SelectedUnitBigScrew * (Convert.ToDouble(ProductionTB.Text) - this.SelectedOrder.ProductionCompleted);
-                                        UpdateMaterialStockQuery.ExecuteNonQuery();
-                                        UpdateMaterialStockQuery.Parameters.Clear();
-                                        UpdateMaterialStockQuery = new SqlCommand("UPDATE Materials SET Stock = Stock - @UsedMaterials WHERE MaterialID = 2", conn, transaction);
-                                        UpdateMaterialStockQuery.Parameters.Add("@UsedMaterials", SqlDbType.Real).Value = this.SelectedUnitSmallScrew * (Convert.ToDouble(ProductionTB.Text) - this.SelectedOrder.ProductionCompleted);
+                                        SqlCommand UpdateMaterialStockQuery = new SqlCommand(@"UPDATE Materials SET Stock = 
+                                                                                                CASE 
+                                                                                                    WHEN MaterialID = 1 THEN Stock - @UsedMaterials1 
+                                                                                                    WHEN MaterialID = 2 THEN Stock - @UsedMaterials2 
+                                                                                                    WHEN MaterialID = 3 THEN Stock - @UsedMaterials3 
+                                                                                                    WHEN MaterialID = 4 THEN Stock - @UsedMaterials4 
+                                                                                                    WHEN MaterialID = 5 THEN Stock - @UsedMaterials5 
+                                                                                                ELSE Stock 
+                                                                                            END 
+                                                                                        WHERE MaterialID IN (1, 2, 3, 4, 5)", conn, transaction);
+
+                                        UpdateMaterialStockQuery.Parameters.Add("@UsedMaterials1", SqlDbType.Real).Value = this.SelectedUnitBigScrew * (Convert.ToDouble(ProductionTB.Text) - this.SelectedOrder.ProductionCompleted);
+                                        UpdateMaterialStockQuery.Parameters.Add("@UsedMaterials2", SqlDbType.Real).Value = this.SelectedUnitSmallScrew * (Convert.ToDouble(ProductionTB.Text) - this.SelectedOrder.ProductionCompleted);
+                                        UpdateMaterialStockQuery.Parameters.Add("@UsedMaterials3", SqlDbType.Real).Value = (Convert.ToDouble(Triplek18mmTB.Text) - this.SelectedOrder.Triplek18mm);
+                                        UpdateMaterialStockQuery.Parameters.Add("@UsedMaterials4", SqlDbType.Real).Value = (Convert.ToDouble(Triplek15mmTB.Text) - this.SelectedOrder.Triplek15mm);
+                                        UpdateMaterialStockQuery.Parameters.Add("@UsedMaterials5", SqlDbType.Real).Value = (Convert.ToDouble(Triplek12mmTB.Text) - this.SelectedOrder.Triplek12mm);
                                         UpdateMaterialStockQuery.ExecuteNonQuery();
                                         UpdateMaterialStockQuery.Dispose();
 
@@ -314,7 +367,7 @@ namespace Astakona
 
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error during transaction: {ex.Message}\n{ex.StackTrace}");
+                            MessageBox.Show($"Error during transaction: {ex.Message}\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             transaction.Rollback();
                         }
                     }
@@ -332,6 +385,11 @@ namespace Astakona
         {
             _hubConnection?.StopAsync();
             this.Close();
+        }
+
+        private void Triplek18mmTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+
         }
     }
 }

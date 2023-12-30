@@ -73,6 +73,15 @@ namespace Astakona
                             case 2:
                                 SmallScrewTB.Text = Convert.ToString(reader["Stock"]);
                                 break;
+                            case 3:
+                                Triplek18mmTB.Text = Convert.ToString(reader["Stock"]);
+                                break;
+                            case 4:
+                                Triplek15mmTB.Text = Convert.ToString(reader["Stock"]);
+                                break;
+                            case 5:
+                                Triplek12mmTB.Text = Convert.ToString(reader["Stock"]);
+                                break;
                         }
                     }
                 }
@@ -92,6 +101,24 @@ namespace Astakona
         private void SmallScrewUpdateButton_Clicked(object sender, RoutedEventArgs e)
         {
             UpdateScrewStock UpdateScrewStock = new UpdateScrewStock(2);
+            UpdateScrewStock.Show();
+        }
+
+        private void Triplek18mmUpdateButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            UpdateScrewStock UpdateScrewStock = new UpdateScrewStock(3);
+            UpdateScrewStock.Show();
+        }
+
+        private void Triplek15mmUpdateButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            UpdateScrewStock UpdateScrewStock = new UpdateScrewStock(4);
+            UpdateScrewStock.Show();
+        }
+
+        private void Triplek12mmUpdateButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            UpdateScrewStock UpdateScrewStock = new UpdateScrewStock(5);
             UpdateScrewStock.Show();
         }
 

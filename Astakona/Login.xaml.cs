@@ -60,6 +60,7 @@ namespace Astakona
                                     AddInventory = reader.GetBoolean(reader.GetOrdinal("AddInventory")),
                                     UpdateInventory = reader.GetBoolean(reader.GetOrdinal("UpdateInventory")),
                                     DeleteInventory = reader.GetBoolean(reader.GetOrdinal("DeleteInventory")),
+                                    UpdateDelivery = reader.GetBoolean(reader.GetOrdinal("UpdateDelivery"))
                                 };
 
                                 ((App)Application.Current).LoggedInUser = LoggedInUser;
