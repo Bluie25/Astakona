@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace Astakona
 {
@@ -27,6 +28,8 @@ namespace Astakona
         public List<ReturnedOrdersDetails> ReturnedOrders { get; set; }
         private Button UpdateReturnedOrderBtn;
         private Button DeleteReturnedOrderBtn;
+        private bool CCB = false;
+        private bool OGCB = true;
 
         public OrderReturnPage()
         {
@@ -41,53 +44,6 @@ namespace Astakona
                 AddReturnedOrderBtn.IsEnabled = false;
         }
 
-        public void LoadOrdersReturnPage()
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connection))
-                {
-                    conn.Open();
-
-                    using (SqlCommand Query = new SqlCommand("SELECT * FROM ReturnedOrders WHERE IsFinished=0", conn))
-                    {
-                        SqlDataReader Reader = Query.ExecuteReader();
-                        ReturnedOrders.Clear();
-
-                        while (Reader.Read())
-                        {
-                            this.ReturnedOrders.Add(new ReturnedOrdersDetails()
-                            {
-                                OrderId = Convert.ToInt32(Reader["OrderID"]),
-                                InvoiceNo = Convert.ToString(Reader["InvoiceNo"]),
-                                InventoryName = Convert.ToString(Reader["InventoryName"]),
-                                Amount = Convert.ToDouble(Reader["Amount"]),
-                                ProductionCompleted = Convert.ToDouble(Reader["PRoductionCompleted"]),
-                                HTCompleted = Convert.ToDouble(Reader["HTCompleted"]),
-                                Delivered = Convert.ToDouble(Reader["Delivered"]),
-                                Customer = Convert.ToString(Reader["Customer"]),
-                                ReturnAmount = Convert.ToDouble(Reader["ReturnedAmount"]),
-                                BigScrewUsed = Convert.ToDouble(Reader["BigScrewUsed"]),
-                                SmallScrewUsed = Convert.ToDouble(Reader["SmallScrewUsed"]),
-                                Triplek18mmUsed = Convert.ToDouble(Reader["Triplek18mmUsed"]),
-                                Triplek15mmUsed = Convert.ToDouble(Reader["Triplek15mmUsed"]),
-                                Triplek12mmUsed = Convert.ToDouble(Reader["Triplek12mmUsed"]),
-                                PalletFixed = Convert.ToDouble(Reader["PalletFixed"])
-                            });
-                        }
-
-                        Reader.Close();
-                        CollectionViewSource.GetDefaultView(ReturnedOrders).Refresh();
-                    }
-                }
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading orders: {ex.Message}\n{ex.StackTrace}");
-            }
-        }
-              
         private async void InitializeSignalR()
         {
             _hubConnection = new HubConnectionBuilder()
@@ -104,6 +60,73 @@ namespace Astakona
                     LoadOrdersReturnPage();
                 });
             });
+        }
+
+        public void LoadOrdersReturnPage()
+        {
+            using (SqlConnection conn = new SqlConnection(connection))
+            {
+                conn.Open();
+                try
+                {
+                    SqlCommand Query = new SqlCommand("SELECT * FROM ReturnedOrders WHERE IsFinished<>@IsFinished", conn);
+                    if (this.CCB && this.OGCB)
+                        Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = -1;
+                    else if (!this.CCB && this.OGCB)
+                        Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
+                    else if (this.CCB && !this.OGCB)
+                        Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 1;
+                    else
+                        Query = new SqlCommand("SELECT * FROM ReturnedOrders WHERE IsFinished=-1", conn);
+
+                    SqlDataReader Reader = Query.ExecuteReader();
+                    ReturnedOrders.Clear();
+
+                    while (Reader.Read())
+                    {
+                        this.ReturnedOrders.Add(new ReturnedOrdersDetails()
+                        {
+                            OrderId = Convert.ToInt32(Reader["OrderID"]),
+                            InvoiceNo = Convert.ToString(Reader["InvoiceNo"]),
+                            InventoryName = Convert.ToString(Reader["InventoryName"]),
+                            Amount = Convert.ToDouble(Reader["Amount"]),
+                            ProductionCompleted = Convert.ToDouble(Reader["PRoductionCompleted"]),
+                            HTCompleted = Convert.ToDouble(Reader["HTCompleted"]),
+                            Delivered = Convert.ToDouble(Reader["Delivered"]),
+                            Customer = Convert.ToString(Reader["Customer"]),
+                            ReturnAmount = Convert.ToDouble(Reader["ReturnedAmount"]),
+                            BigScrewUsed = Convert.ToDouble(Reader["BigScrewUsed"]),
+                            SmallScrewUsed = Convert.ToDouble(Reader["SmallScrewUsed"]),
+                            Triplek18mmUsed = Convert.ToDouble(Reader["Triplek18mmUsed"]),
+                            Triplek15mmUsed = Convert.ToDouble(Reader["Triplek15mmUsed"]),
+                            Triplek12mmUsed = Convert.ToDouble(Reader["Triplek12mmUsed"]),
+                            PalletFixed = Convert.ToDouble(Reader["PalletFixed"])
+                        });
+                    }
+
+                    Reader.Close();
+                    CollectionViewSource.GetDefaultView(ReturnedOrders).Refresh();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading orders: {ex.Message}\n{ex.StackTrace}");
+                }
+            }
+        }
+
+        private async void CheckBox_Status(object sender, RoutedEventArgs e)
+        {
+            if (CompletedCB != null && CompletedCB.IsChecked == true)
+                this.CCB = true;
+            else
+                this.CCB = false;
+            if (OnGoingCB != null && OnGoingCB.IsChecked == true)
+                this.OGCB = true;
+            else
+                this.OGCB = false;
+
+            if (_hubConnection != null)
+                await _hubConnection.InvokeAsync("SendOrdersReturnPageUpdate");
         }
 
         private void UpdateReturnedOrderBtn_Loaded(object sender, RoutedEventArgs e)

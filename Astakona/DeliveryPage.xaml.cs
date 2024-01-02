@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace Astakona
 {
@@ -26,6 +27,8 @@ namespace Astakona
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString + ";MultipleActiveResultSets=True";
         private Button UpdateDeliveryBtn;
         public List<OrdersDetails> Delivery { get; set; }
+        private bool CCB = false;
+        private bool OGCB = true;
 
         public DeliveryPage()
         {
@@ -56,47 +59,68 @@ namespace Astakona
 
         public void LoadPalletPage()
         {
-            try
+            using (SqlConnection conn = new SqlConnection(connection))
             {
-                using (SqlConnection conn = new SqlConnection(connection))
+                conn.Open();
+                try
                 {
-                    conn.Open();
+                    SqlCommand Query = new SqlCommand("SELECT * FROM Orders WHERE IsFinished<>@IsFinished", conn);
+                    if (this.CCB && this.OGCB)
+                        Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = -1;
+                    else if (!this.CCB && this.OGCB)
+                        Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
+                    else if (this.CCB && !this.OGCB)
+                        Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 1;
+                    else
+                        Query = new SqlCommand("SELECT * FROM Orders WHERE IsFinished=-1", conn);
 
-                    using (SqlCommand Query = new SqlCommand("SELECT * FROM Orders WHERE IsFinished=0", conn))
+                    SqlDataReader Reader = Query.ExecuteReader();
+                    Delivery.Clear();
+                    while (Reader.Read())
                     {
-                        SqlDataReader Reader = Query.ExecuteReader();
-                        Delivery.Clear();
-                        while (Reader.Read())
+                        this.Delivery.Add(new OrdersDetails()
                         {
-                            this.Delivery.Add(new OrdersDetails()
-                            {
-                                OrderID = Convert.ToInt32(Reader["OrderID"]),
-                                InvoiceNo = Convert.ToString(Reader["InvoiceNo"]),
-                                InventoryID = Convert.ToInt32(Reader["InventoryID"]),
-                                InventoryName = Convert.ToString(Reader["InventoryName"]),
-                                Amount = Convert.ToDouble(Reader["Amount"]),
-                                ProductionCompleted = Convert.ToDouble(Reader["ProductionCompleted"]),
-                                HTBTS = Convert.ToDouble(Reader["HTBTS"]),
-                                HTEKS = Convert.ToDouble(Reader["HTEKS"]),
-                                HTKKS = Convert.ToDouble(Reader["HTKKS"]),
-                                TotalHeatCompleted = Convert.ToDouble(Reader["HTEKS"]) + Convert.ToDouble(Reader["HTBTS"]) + Convert.ToDouble(Reader["HTKKS"]),
-                                OrderDate = Reader.GetDateTime(Reader.GetOrdinal("OrderDate")),
-                                DueDate = Reader.GetDateTime(Reader.GetOrdinal("DueDate")),
-                                Customer = Convert.ToString(Reader["Customer"]),
-                                ManufactureTeam = Convert.ToString(Reader["ManufactureTeam"]),
-                                Delivered = Convert.ToDouble(Reader["Delivered"])
-                            });
-                        }
-                        Reader.Close();
-                        CollectionViewSource.GetDefaultView(Delivery).Refresh();
+                            OrderID = Convert.ToInt32(Reader["OrderID"]),
+                            InvoiceNo = Convert.ToString(Reader["InvoiceNo"]),
+                            InventoryID = Convert.ToInt32(Reader["InventoryID"]),
+                            InventoryName = Convert.ToString(Reader["InventoryName"]),
+                            Amount = Convert.ToDouble(Reader["Amount"]),
+                            ProductionCompleted = Convert.ToDouble(Reader["ProductionCompleted"]),
+                            HTBTS = Convert.ToDouble(Reader["HTBTS"]),
+                            HTEKS = Convert.ToDouble(Reader["HTEKS"]),
+                            HTKKS = Convert.ToDouble(Reader["HTKKS"]),
+                            TotalHeatCompleted = Convert.ToDouble(Reader["HTEKS"]) + Convert.ToDouble(Reader["HTBTS"]) + Convert.ToDouble(Reader["HTKKS"]),
+                            OrderDate = Reader.GetDateTime(Reader.GetOrdinal("OrderDate")),
+                            DueDate = Reader.GetDateTime(Reader.GetOrdinal("DueDate")),
+                            Customer = Convert.ToString(Reader["Customer"]),
+                            ManufactureTeam = Convert.ToString(Reader["ManufactureTeam"]),
+                            Delivered = Convert.ToDouble(Reader["Delivered"])
+                        });
                     }
+                    Reader.Close();
+                    CollectionViewSource.GetDefaultView(Delivery).Refresh();
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading orders: {ex.Message}\n{ex.StackTrace}");
                 }
             }
+        }
 
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading orders: {ex.Message}\n{ex.StackTrace}");
-            }
+        private async void CheckBox_Status(object sender, RoutedEventArgs e)
+        {
+            if (CompletedCB != null && CompletedCB.IsChecked == true)
+                this.CCB = true;
+            else
+                this.CCB = false;
+            if (OnGoingCB != null && OnGoingCB.IsChecked == true)
+                this.OGCB = true;
+            else
+                this.OGCB = false;
+
+            if (_hubConnection != null)
+                await _hubConnection.InvokeAsync("SendDeliveriesPageUpdate");
         }
 
         private void UpdateDeliveryBtn_Loaded(object sender, RoutedEventArgs e)

@@ -16,6 +16,7 @@ using System.Data.SqlClient;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Net;
 using System.Diagnostics;
+using System.Data;
 
 namespace Astakona
 {
@@ -29,6 +30,8 @@ namespace Astakona
         public string connection = ConfigurationManager.ConnectionStrings["conn"].ConnectionString + ";MultipleActiveResultSets=True";
         private Button UpdateOrderBtn;
         private Button DeleteOrderBtn;
+        private bool CCB = false;
+        private bool OGCB = true;
         public List<OrdersDetails> Orders { get; set; }
 
         public OrderPage()
@@ -74,7 +77,16 @@ namespace Astakona
                     {
                         try
                         {
-                            SqlCommand OrdersQuery = new SqlCommand("SELECT * FROM Orders WHERE IsFinished=0", conn, transaction);
+                            SqlCommand OrdersQuery = new SqlCommand("SELECT * FROM Orders WHERE IsFinished<>@IsFinished", conn, transaction);
+                            if (this.CCB && this.OGCB)
+                                OrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = -1;
+                            else if (!this.CCB && this.OGCB)
+                                OrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
+                            else if (this.CCB && !this.OGCB)
+                                OrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 1;
+                            else
+                                OrdersQuery = new SqlCommand("SELECT * FROM Orders WHERE IsFinished=-1", conn, transaction);
+
                             SqlDataReader OrdersReader = OrdersQuery.ExecuteReader();
                             Orders.Clear();
 
@@ -144,6 +156,21 @@ namespace Astakona
             {
                 MessageBox.Show($"Error loading orders: {ex.Message}\n{ex.StackTrace}");
             }
+        }
+        
+        private async void CheckBox_Status(object sender, RoutedEventArgs e)
+        {
+            if (CompletedCB != null && CompletedCB.IsChecked == true)
+                this.CCB = true;
+            else
+                this.CCB = false;
+            if (OnGoingCB != null && OnGoingCB.IsChecked == true)
+                this.OGCB = true;
+            else
+                this.OGCB = false;
+
+            if(_hubConnection != null)
+                await _hubConnection.InvokeAsync("SendOrdersPageUpdate");
         }
 
         private void UpdateOrderBtn_Loaded(object sender, RoutedEventArgs e)
