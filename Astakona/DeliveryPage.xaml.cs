@@ -68,9 +68,9 @@ namespace Astakona
                     if (this.CCB && this.OGCB)
                         Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = -1;
                     else if (!this.CCB && this.OGCB)
-                        Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
-                    else if (this.CCB && !this.OGCB)
                         Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 1;
+                    else if (this.CCB && !this.OGCB)
+                        Query.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
                     else
                         Query = new SqlCommand("SELECT * FROM Orders WHERE IsFinished=-1", conn);
 
@@ -94,7 +94,8 @@ namespace Astakona
                             DueDate = Reader.GetDateTime(Reader.GetOrdinal("DueDate")),
                             Customer = Convert.ToString(Reader["Customer"]),
                             ManufactureTeam = Convert.ToString(Reader["ManufactureTeam"]),
-                            Delivered = Convert.ToDouble(Reader["Delivered"])
+                            Delivered = Convert.ToDouble(Reader["Delivered"]),
+                            IsFinished = Convert.ToBoolean(Reader["IsFinished"]),
                         });
                     }
                     Reader.Close();

@@ -155,6 +155,7 @@ namespace Astakona
                                         break;
                                 }
                             }
+                            CheckMaterialStockReader.Close();
 
                             if (string.IsNullOrWhiteSpace(this.error))
                             {
@@ -166,7 +167,8 @@ namespace Astakona
                                                                                                         "SmallScrewUsed=@SmallScrewUsed, " +
                                                                                                         "Triplek18mmUsed=@Triplek18mmUsed, " +
                                                                                                         "Triplek15mmUsed=@Triplek15mmUsed, " +
-                                                                                                        "Triplek12mmUsed=@Triplek12mmUsed WHERE OrderID=@OrderID", conn, transaction))
+                                                                                                        "Triplek12mmUsed=@Triplek12mmUsed, " +
+                                                                                                        "IsFinished=@IsFinished WHERE OrderID=@OrderID", conn, transaction))
                                 {
                                     UpdateReturnedOrdersQuery.Parameters.Add("@ReturnedAmount", SqlDbType.Real).Value = Convert.ToDouble(ReturnedAmountTB.Text);
                                     UpdateReturnedOrdersQuery.Parameters.Add("@PalletFixed", SqlDbType.Real).Value = Convert.ToDouble(FixedPalletTB.Text);
@@ -176,7 +178,14 @@ namespace Astakona
                                     UpdateReturnedOrdersQuery.Parameters.Add("@Triplek15mmUsed", SqlDbType.Real).Value = Convert.ToDouble(Triplek15mmTB.Text);
                                     UpdateReturnedOrdersQuery.Parameters.Add("@Triplek12mmUsed", SqlDbType.Real).Value = Convert.ToDouble(Triplek12mmTB.Text);
                                     UpdateReturnedOrdersQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedReturnedOrder.OrderId;
-                                    
+                                    if (Convert.ToDouble(FixedPalletTB.Text) == Convert.ToDouble(ReturnedAmountTB.Text))
+                                    {
+                                        UpdateReturnedOrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Bit).Value = 1;
+                                        MessageBox.Show("Perbaikan return untuk Invoice " + this.SelectedReturnedOrder.InvoiceNo + " telah terselesaikan.", "Completed", MessageBoxButton.OK);
+                                    }
+
+                                    else
+                                        UpdateReturnedOrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Bit).Value = 0;
                                     int rowsAffected = UpdateReturnedOrdersQuery.ExecuteNonQuery();
                                     UpdateReturnedOrdersQuery.Dispose();
 
@@ -202,22 +211,15 @@ namespace Astakona
                                         UpdateMaterialStockQuery.ExecuteNonQuery();
                                         UpdateMaterialStockQuery.Dispose();
 
-                                        ////UPDATE PALLETS STOCK IN INVENTORIES TABLE
-                                        SqlCommand UpdateInventoriesStockQuery = new SqlCommand("UPDATE Inventories SET Stock=Stock+@FixedPallet, IsFinished=@IsFinished WHERE InventoryID=@SelectedPalletID", conn, transaction);
+                                        ////UPDATE PALLETS STOCK IN INVENTORIES TABLE (ON HOLD)
+                                        /*SqlCommand UpdateInventoriesStockQuery = new SqlCommand("UPDATE Inventories SET Stock=Stock+@FixedPallet WHERE InventoryID=@SelectedPalletID", conn, transaction);
                                         if(Convert.ToDouble(FixedPalletTB.Text) != Convert.ToDouble(ReturnedAmountTB.Text))
-                                        {
                                             UpdateInventoriesStockQuery.Parameters.Add("@FixedPallet", SqlDbType.Real).Value = Convert.ToDouble(FixedPalletTB.Text) - this.SelectedReturnedOrder.PalletFixed;
-                                            UpdateInventoriesStockQuery.Parameters.Add("@IsFinished", SqlDbType.Bit).Value = 0;
-                                        }
                                         else
-                                        {
-                                            UpdateInventoriesStockQuery.Parameters.Add("@FixedPallet", SqlDbType.Real).Value = -Convert.ToDouble(FixedPalletTB.Text);
-                                            UpdateInventoriesStockQuery.Parameters.Add("@IsFinished", SqlDbType.Bit).Value = 1;
-                                            MessageBox.Show("Perbaikan return untuk Invoice " + this.SelectedReturnedOrder.InvoiceNo + " telah terselesaikan.", "Completed", MessageBoxButton.OK);
-                                        }
+                                            UpdateInventoriesStockQuery.Parameters.Add("@FixedPallet", SqlDbType.Real).Value = - this.SelectedReturnedOrder.PalletFixed;
                                         UpdateInventoriesStockQuery.Parameters.Add("@SelectedPalletID", SqlDbType.Int).Value = this.SelectedReturnedOrder.InventoryID;
                                         UpdateInventoriesStockQuery.ExecuteNonQuery();
-                                        UpdateInventoriesStockQuery.Dispose();
+                                        UpdateInventoriesStockQuery.Dispose();*/
 
                                         transaction.Commit();
 

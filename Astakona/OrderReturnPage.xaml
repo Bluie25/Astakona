@@ -147,7 +147,7 @@
                             <GridViewColumn Header="Jumlah order" DisplayMemberBinding="{Binding Amount}" Width="100"/>
                             <GridViewColumn Header="Terkirim" DisplayMemberBinding="{Binding Delivered}" Width="100"/>
                             <GridViewColumn Header="Jumlah return" DisplayMemberBinding="{Binding ReturnAmount}"  Width="100" />
-                            <GridViewColumn Header="Yang sudah diperbaiki" DisplayMemberBinding="{Binding Pallet Fixed}"  Width="150" />
+                            <GridViewColumn Header="Yang sudah diperbaiki" DisplayMemberBinding="{Binding PalletFixed}"  Width="150" />
                             <GridViewColumn Header="Customer" DisplayMemberBinding="{Binding Customer}" Width="200"/>
                             <GridViewColumn Header="Update" Width="100">
                                 <GridViewColumn.CellTemplate>
@@ -213,6 +213,20 @@
                             <Setter Property="BorderThickness" Value="0.8"/>
                             <Setter Property="BorderBrush" Value="#262f3c"/>
                             <EventSetter Event="Loaded" Handler="ListViewItem_Loaded"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                            <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsFinished}" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="Pink"/>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>

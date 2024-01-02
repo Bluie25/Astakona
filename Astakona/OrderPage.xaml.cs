@@ -81,9 +81,9 @@ namespace Astakona
                             if (this.CCB && this.OGCB)
                                 OrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = -1;
                             else if (!this.CCB && this.OGCB)
-                                OrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
-                            else if (this.CCB && !this.OGCB)
                                 OrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 1;
+                            else if (this.CCB && !this.OGCB)
+                                OrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
                             else
                                 OrdersQuery = new SqlCommand("SELECT * FROM Orders WHERE IsFinished=-1", conn, transaction);
 
@@ -112,6 +112,7 @@ namespace Astakona
                                     Triplek18mm = Convert.ToDouble(OrdersReader["Triplek18mm"]),
                                     Triplek15mm = Convert.ToDouble(OrdersReader["Triplek15mm"]),
                                     Triplek12mm = Convert.ToDouble(OrdersReader["Triplek12mm"]),
+                                    IsFinished = Convert.ToBoolean(OrdersReader["IsFinished"])
                                 });
                             }
 

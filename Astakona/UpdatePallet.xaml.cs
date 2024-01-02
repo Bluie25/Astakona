@@ -100,8 +100,8 @@ namespace Astakona
                         conn.Open();
 
                         using (SqlCommand Query = new SqlCommand("UPDATE Inventories SET " +
-                                                                "Name=@Name " +
-                                                                "Stock=@Stock " +
+                                                                "Name=@Name, " +
+                                                                "Stock=@Stock, " +
                                                                 "BigScrew=@BigScrew, " +
                                                                 "SmallScrew=@SmallScrew WHERE InventoryID=@InventoryID", conn))
                         {
