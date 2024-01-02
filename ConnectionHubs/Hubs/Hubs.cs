@@ -27,4 +27,9 @@ public class Hubs : Hub
     {
         await Clients.All.SendAsync("ReceiveAccountsPageUpdate");
     }
+
+    public async Task SendOrdersReturnPageUpdate()
+    {
+        await Clients.All.SendAsync("ReceiveOrdersReturnPageUpdate");
+    }
 }

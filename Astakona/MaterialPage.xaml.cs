@@ -33,6 +33,15 @@ namespace Astakona
             LoadMaterialsStock();
             InitializeSignalR();
 
+            var LoggedInUser = ((App)Application.Current).LoggedInUser;
+            if (!LoggedInUser.UpdateMaterial)
+            {
+                BigScrewBtn.IsEnabled = false;
+                SmallScrewBtn.IsEnabled = false;
+                Triplek18mmBtn.IsEnabled = false;
+                Triplek15mmBtn.IsEnabled = false;
+                Triplek12mmBtn.IsEnabled = false;
+            }
         }
 
         private async void InitializeSignalR()
@@ -136,6 +145,14 @@ namespace Astakona
             _hubConnection?.StopAsync();
             this.Close();
             OrderPage.Show();
+        }
+
+        private void ReturnButtonClick(object sender, RoutedEventArgs e)
+        {
+            OrderReturnPage OrderReturnPage = new OrderReturnPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            OrderReturnPage.Show();
         }
 
         private void DeliveryButtonClick(object sender, RoutedEventArgs e)

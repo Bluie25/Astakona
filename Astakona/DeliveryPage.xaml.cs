@@ -168,6 +168,14 @@ namespace Astakona
             OrderPage.Show();
         }
 
+        private void ReturnButtonClick(object sender, RoutedEventArgs e)
+        {
+            OrderReturnPage OrderReturnPage = new OrderReturnPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            OrderReturnPage.Show();
+        }
+
         private void MaterialButtonClick(object sender, RoutedEventArgs e)
         {
             MaterialPage MaterialPage = new MaterialPage();

@@ -1,4 +1,4 @@
-﻿<Window x:Class="Astakona.DeliveryPage"
+﻿<Window x:Class="Astakona.OrderReturnPage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:Astakona"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Pengiriman" 
+        Title="Return pallet rusak" 
         Height="768" 
         Width="1366"
         WindowState="Maximized">
+
 
     <Window.Resources>
         <Style TargetType="Button" x:Key="PanelButtonStyle">
@@ -75,13 +76,13 @@
             </Grid>
 
             <Grid Grid.Row="3">
-                <Button  Background="#2e3746" Foreground="White" Style="{StaticResource PanelButtonStyle}" IsEnabled="False">
+                <Button Style="{StaticResource PanelButtonStyle}" Click="DeliveryButtonClick">
                     <TextBlock Text="Pengiriman" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
-
+            
             <Grid Grid.Row="4">
-                <Button Style="{StaticResource PanelButtonStyle}" Click="ReturnButtonClick">
+                <Button Background="#2e3746" Foreground="White" Style="{StaticResource PanelButtonStyle}" IsEnabled="False">
                     <TextBlock Text="Return" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
@@ -115,6 +116,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
                 <RowDefinition/>
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0" BorderBrush="#262f3c" BorderThickness="1">
@@ -126,7 +128,7 @@
             </Border>
 
             <Grid Grid.Row="1" Background="#eff2f6">
-                <ListView  Background="#eff2f6" ItemsSource="{Binding Delivery}">
+                <ListView  Background="#eff2f6" ItemsSource="{Binding ReturnedOrders}">
                     <ListView.View>
                         <GridView>
                             <GridView.ColumnHeaderContainerStyle>
@@ -135,50 +137,19 @@
                                     <Setter Property="FontWeight" Value="Bold"/>
                                 </Style>
                             </GridView.ColumnHeaderContainerStyle>
-                            <GridViewColumn Header="No. Invoice" Width="80" DisplayMemberBinding="{Binding InvoiceNo}"/>
-                            <GridViewColumn Header="Nama Barang" DisplayMemberBinding="{Binding InventoryName}" Width="200"/>
-                            <GridViewColumn Header="Ready Stock / Order" Width="150">
+                            <GridViewColumn Header="No. Invoice" DisplayMemberBinding="{Binding InvoiceNo}"  Width="100" />
+                            <GridViewColumn Header="Pallet yang di order" DisplayMemberBinding="{Binding InventoryName}" Width="200" />
+                            <GridViewColumn Header="Jumlah order" DisplayMemberBinding="{Binding Amount}" Width="100"/>
+                            <GridViewColumn Header="Terkirim" DisplayMemberBinding="{Binding Delivered}" Width="100"/>
+                            <GridViewColumn Header="Jumlah return" DisplayMemberBinding="{Binding ReturnAmount}"  Width="100" />
+                            <GridViewColumn Header="Yang sudah diperbaiki" DisplayMemberBinding="{Binding Pallet Fixed}"  Width="150" />
+                            <GridViewColumn Header="Customer" DisplayMemberBinding="{Binding Customer}" Width="200"/>
+                            <GridViewColumn Header="Update" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock HorizontalAlignment="Center">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0} / {1}">
-                                                    <Binding Path="TotalHeatCompleted" />
-                                                    <Binding Path="Amount" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Terkirim / Order" Width="150">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock HorizontalAlignment="Center">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0} / {1}">
-                                                    <Binding Path="Delivered" />
-                                                    <Binding Path="Amount" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Customer" DisplayMemberBinding="{Binding Customer}" Width="150"/>
-                            <GridViewColumn Header="Jatuh Tempo" Width="100" >
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding DueDate, StringFormat={}{0:dd/MM/yyyy}}" HorizontalAlignment="Center"/>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Update" Width="78">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button x:Name="UpdateDeliveryBtn"  Content="Update" Click="UpdateDeliveryButton_Click"
+                                        <Button x:Name="UpdateReturnedOrderBtn" Content="Update" Click="UpdateReturnedOrderButton_Click"
                                             CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="UpdateDeliveryBtn_Loaded">
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="UpdateReturnedOrderBtn_Loaded">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Background" Value="#9bedff"/>
@@ -191,6 +162,32 @@
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter Property="Background" Value="#005F91"/>
                                                             <Setter Property="BorderBrush" Value="#005F91"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Delete" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button x:Name="DeleteReturnedOrderBtn" Content="Delete" Click="DeleteOrderButton_Click"
+                                            CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Loaded="DeleteReturnedOrderBtn_Loaded">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Background" Value="#ff9b9b"/>
+                                                    <Setter Property="Foreground" Value="Black"/>
+                                                    <Setter Property="BorderBrush" Value="Black"/>
+                                                    <Setter Property="Padding" Value="8,4"/>
+                                                    <Setter Property="Margin" Value="4"/>
+                                                    <Setter Property="FontSize" Value="12"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#ff5d5d"/>
+                                                            <Setter Property="BorderBrush" Value="#ff5d5d"/>
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -214,6 +211,10 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Button x:Name="AddReturnedOrderBtn" Content="Tambah return invoice" Height="30" Width="150" HorizontalAlignment="Right" Margin="0 0 10 0" Click="AddReturnedOrderButton_Click"/>
             </Grid>
         </Grid>
     </Grid>

@@ -40,6 +40,12 @@ namespace Astakona
             DeliveryPage.Show();
         }
 
+        private void ReturnButtonClick(object sender, RoutedEventArgs e)
+        {
+            OrderReturnPage OrderReturnPage = new OrderReturnPage();
+            this.Close();
+            OrderReturnPage.Show();
+        }
 
         private void MaterialButtonClick(object sender, RoutedEventArgs e)
         {

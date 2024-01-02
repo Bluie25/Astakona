@@ -216,6 +216,14 @@ namespace Astakona
             OrderPage.Show();
         }
 
+        private void ReturnButtonClick(object sender, RoutedEventArgs e)
+        {
+            OrderReturnPage OrderReturnPage = new OrderReturnPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            OrderReturnPage.Show();
+        }
+
         private void DeliveryButtonClick(object sender, RoutedEventArgs e)
         {
             DeliveryPage DeliveryPage = new DeliveryPage();
@@ -223,7 +231,6 @@ namespace Astakona
             this.Close();
             DeliveryPage.Show();
         }
-
 
         private void MaterialButtonClick(object sender, RoutedEventArgs e)
         {

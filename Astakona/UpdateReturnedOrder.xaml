@@ -1,0 +1,84 @@
+﻿<Window x:Class="Astakona.UpdateReturnedOrder"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Astakona"
+        mc:Ignorable="d"
+        Title="Update order yang di return" 
+        Height="500" 
+        Width="900">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Label Content="Nomor Invoice:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100 0 0 0"/>
+            <TextBox x:Name="InvoiceNoTB" Width="200" Height="25" Margin="150 0 0 0" IsReadOnly="True" IsHitTestVisible="False"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Label Content="Pallet yang di pesan:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="73 0 0 0"/>
+            <TextBox x:Name="InventoryNameTB" FontSize="17" Width="200" Height="25" Margin="150 0 0 0" IsReadOnly="True" IsHitTestVisible="False"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Label Content="Jumlah order yang terselesaikan:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="7 0 0 0"/>
+            <TextBox x:Name="OrderProgressTB" FontSize="17" Width="200" Height="25" Margin="150 0 0 0" IsReadOnly="True" IsHitTestVisible="False"/>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Label Content="Customer:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="124 0 0 0"/>
+            <TextBox x:Name="CustomerTB" FontSize="17" Width="200" Height="25" Margin="150 0 0 0" IsReadOnly="True" IsHitTestVisible="False"/>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Label Content="Jumlah yang direturn:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="63 0 0 0"/>
+            <TextBox x:Name="ReturnedAmountTB" FontSize="17" Width="200" Height="25" Margin="150 0 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+        </Grid>
+        
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Label Content="Yang sudah diperbaiki:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="58 0 0 0"/>
+            <TextBox x:Name="FixedPalletTB" FontSize="17" Width="200" Height="25" Margin="150 0 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Label FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <TextBlock Text="Jumlah paku yang terpakai untuk perbaikan" TextDecorations="Underline"/>
+            </Label>
+            <Label Content="Paku besar (2 1/2 Inci):" VerticalAlignment="Center"/>
+            <TextBox x:Name="BigScrewTB" FontSize="17"  Width="100" Height="25" Margin="0 5 90 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+            <Label Content="Paku kecil (2 Inci):" VerticalAlignment="Center" Margin="235 0 0 0"/>
+            <TextBox x:Name="SmallScrewTB" FontSize="17"  Width="100" Height="25" Margin="330 5 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="1">
+            <Label FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <TextBlock Text="Jumlah triplek  yang terpakai untuk perbaikan" TextDecorations="Underline"/>
+            </Label>
+            <Label Content="12 mm:" VerticalAlignment="Center" Margin="0 0 0 0"/>
+            <TextBox x:Name="Triplek12mmTB" FontSize="17" Width="100" Height="25" Margin="0 5 250 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+            <Label Content="15 mm:" VerticalAlignment="Center" Margin="150 0 0 0"/>
+            <TextBox x:Name="Triplek15mmTB" FontSize="17" Width="100" Height="25" Margin="50 5 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+            <Label Content="18 mm:" VerticalAlignment="Center" Margin="300 0 0 0"/>
+            <TextBox x:Name="Triplek18mmTB" FontSize="17" Width="100" Height="25" Margin="345 5 0 0" PreviewTextInput="NumberTB_PreviewTextInput"/>
+
+        </Grid>
+
+        <Grid Grid.Row="4" Grid.Column="1">
+            <Button Width="150" Height="75" HorizontalAlignment="Left" Margin="30 0 0 0" Content="Cancel" Click="CancelButton_Clicked"/>
+            <Button Width="150" Height="75" HorizontalAlignment="Right" Margin="0 0 30 0" Content="Update" Click="UpdateButton_Clicked"/>
+        </Grid>
+    </Grid>
+</Window>

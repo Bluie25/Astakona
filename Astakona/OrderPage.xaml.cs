@@ -254,11 +254,20 @@ namespace Astakona
             }
         }
 
-        private void HomeButton_Click(object sender, RoutedEventArgs e)
+        private void HomeButtonClick(object sender, RoutedEventArgs e)
         {
             Dashboard Dashboard = new Dashboard();
             _hubConnection?.StopAsync();
+            this.Close();
             Dashboard.Show();
+        }
+
+        private void ReturnButtonClick(object sender, RoutedEventArgs e)
+        {
+            OrderReturnPage OrderReturnPage = new OrderReturnPage();
+            _hubConnection?.StopAsync();
+            this.Close();
+            OrderReturnPage.Show();
         }
 
         private void DeliveryButtonClick(object sender, RoutedEventArgs e)

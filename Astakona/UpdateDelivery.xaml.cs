@@ -104,20 +104,27 @@ namespace Astakona
 
                             if (rowsAffected > 0)
                             {
+                                ////UPDATE DELIVERED AMOUNT IN ORDERS TABLE
                                 SqlCommand UpdateOrderQuery = new SqlCommand("UPDATE Orders SET Delivered=@Delivered, IsFinished=@IsFinished WHERE OrderID=@OrderID ", conn, transaction);
                                 UpdateOrderQuery.Parameters.Add("@Delivered", SqlDbType.Real).Value = Convert.ToDouble(DeliveredTB.Text);
                                 UpdateOrderQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
-                                if(Convert.ToDouble(DeliveredTB.Text) == this.SelectedOrder.Amount)
+                                if (Convert.ToDouble(DeliveredTB.Text) == this.SelectedOrder.Amount)
                                 {
                                     UpdateOrderQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 1;
-                                    MessageBox.Show("Order untuk Invoice " + this.SelectedOrder.InvoiceNo + " telah terselesaikan", "Finished", MessageBoxButton.OK);
+                                    MessageBox.Show("Order untuk Invoice " + this.SelectedOrder.InvoiceNo + " telah terselesaikan.", "Completed", MessageBoxButton.OK);
                                 }
-
                                 else
                                     UpdateOrderQuery.Parameters.Add("@IsFinished", SqlDbType.Int).Value = 0;
 
                                 UpdateOrderQuery.ExecuteNonQuery();
                                 UpdateOrderQuery.Dispose();
+
+                                ////UPDATE RETURNED DETAILS IF HAVE
+                                SqlCommand UpdateReturnedOrdersQuery = new SqlCommand("UPDATE ReturnedOrders SET Delivered = @Delivered WHERE OrderID=@OrderID", conn, transaction);
+                                UpdateReturnedOrdersQuery.Parameters.Add("@Delivered", SqlDbType.Real).Value = Convert.ToDouble(DeliveredTB.Text);
+                                UpdateReturnedOrdersQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedOrder.OrderID;
+                                UpdateReturnedOrdersQuery.ExecuteNonQuery();
+                                UpdateReturnedOrdersQuery.Dispose();
                                 transaction.Commit();
 
                                 if (_hubConnection != null)
@@ -125,6 +132,7 @@ namespace Astakona
                                     await _hubConnection.InvokeAsync("SendOrdersPageUpdate");
                                     await _hubConnection.InvokeAsync("SendDeliveriesPageUpdate");
                                     await _hubConnection.InvokeAsync("SendPalletsPageUpdate");
+                                    await _hubConnection.InvokeAsync("SendOrdersReturnPageUpdate");
                                     await _hubConnection.StopAsync();
                                 }
                                 

@@ -51,6 +51,7 @@
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
@@ -62,7 +63,7 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <Button Style="{StaticResource PanelButtonStyle}" Click="HomeButtonClick" >
+                <Button Style="{StaticResource PanelButtonStyle}" Click="HomeButtonClick">
                     <TextBlock Text="Home" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
@@ -79,25 +80,31 @@
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="4" Background="#262f3c">
+            <Grid Grid.Row="4">
+                <Button Style="{StaticResource PanelButtonStyle}" Click="ReturnButtonClick">
+                    <TextBlock Text="Return" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
+                </Button>
+            </Grid>
+
+            <Grid Grid.Row="5" Background="#262f3c">
                 <Button Background="#2e3746" Foreground="White" Style="{StaticResource PanelButtonStyle}" IsEnabled="False">
                     <TextBlock Text="Stock Material" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="5" Background="#262f3c">
+            <Grid Grid.Row="6" Background="#262f3c">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="PalletButtonClick">
                     <TextBlock Text="Stock Pallet" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="6" Background="#262f3c">
+            <Grid Grid.Row="7" Background="#262f3c">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="AccountButtonClick">
                     <TextBlock Text="Account" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="8">
+            <Grid Grid.Row="9">
                 <Button  Style="{StaticResource PanelButtonStyle}" Click="LogoutButton_Click">
                     <TextBlock Text="Log Out" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
@@ -130,7 +137,7 @@
                 <Label Content="Paku 2 1/2 Inci" FontSize="15" VerticalAlignment="Center" Margin="150 0 0 0"/>
                 <Label Content="Sisa Stock:" FontSize="15" VerticalAlignment="Center" Margin="400 0 0 0"/>
                 <TextBox x:Name="BigScrewTB" FontSize="20" Height="30" Width="200" Margin="0 0 50 0" IsReadOnly="True" IsHitTestVisible="False"/>
-                <Button Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="BigScrewUpdateButton_Clicked"/>
+                <Button x:Name="BigScrewBtn" Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="BigScrewUpdateButton_Clicked"/>
             </Grid>
 
             <Grid Grid.Row="2" Background="#eff2f6">
@@ -140,7 +147,7 @@
                 <Label Content="Paku 2 Inci" FontSize="15" VerticalAlignment="Center" Margin="150 0 0 0"/>
                 <Label Content="Sisa Stock:" FontSize="15" VerticalAlignment="Center" Margin="400 0 0 0"/>
                 <TextBox x:Name="SmallScrewTB" FontSize="20" Height="30" Width="200" Margin="0 0 50 0" IsReadOnly="True" IsHitTestVisible="False"/>
-                <Button Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="SmallScrewUpdateButton_Clicked"/>
+                <Button x:Name="SmallScrewBtn" Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="SmallScrewUpdateButton_Clicked"/>
             </Grid>
 
             <Grid Grid.Row="3" Background="#eff2f6">
@@ -150,7 +157,7 @@
                 <Label Content="Triplek 18 mm" FontSize="15" VerticalAlignment="Center" Margin="150 0 0 0"/>
                 <Label Content="Sisa Stock:" FontSize="15" VerticalAlignment="Center" Margin="400 0 0 0"/>
                 <TextBox x:Name="Triplek18mmTB" FontSize="20" Height="30" Width="200" Margin="0 0 50 0" IsReadOnly="True" IsHitTestVisible="False"/>
-                <Button Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="Triplek18mmUpdateButton_Clicked"/>
+                <Button x:Name="Triplek18mmBtn" Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="Triplek18mmUpdateButton_Clicked"/>
             </Grid>
             
             <Grid Grid.Row="4" Background="#eff2f6">
@@ -160,7 +167,7 @@
                 <Label Content="Triplek 15 mm" FontSize="15" VerticalAlignment="Center" Margin="150 0 0 0"/>
                 <Label Content="Sisa Stock:" FontSize="15" VerticalAlignment="Center" Margin="400 0 0 0"/>
                 <TextBox x:Name="Triplek15mmTB" FontSize="20" Height="30" Width="200" Margin="0 0 50 0" IsReadOnly="True" IsHitTestVisible="False"/>
-                <Button Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="Triplek15mmUpdateButton_Clicked"/>
+                <Button x:Name="Triplek15mmBtn" Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="Triplek15mmUpdateButton_Clicked"/>
             </Grid>
             
             <Grid Grid.Row="5" Background="#eff2f6">
@@ -170,9 +177,9 @@
                 <Label Content="Triplek 12 mm" FontSize="15" VerticalAlignment="Center" Margin="150 0 0 0"/>
                 <Label Content="Sisa Stock:" FontSize="15" VerticalAlignment="Center" Margin="400 0 0 0"/>
                 <TextBox x:Name="Triplek12mmTB" FontSize="20" Height="30" Width="200" Margin="0 0 50 0" IsReadOnly="True" IsHitTestVisible="False"/>
-                <Button Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="Triplek12mmUpdateButton_Clicked"/>
+                <Button x:Name="Triplek12mmBtn" Content="Update" Width="100" Height="50" Margin="350 0 0 0" Click="Triplek12mmUpdateButton_Clicked"/>
             </Grid>
-            
+
             <Grid Grid.Row="6" Background="#eff2f6">
             </Grid>
         </Grid>

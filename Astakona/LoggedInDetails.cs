@@ -22,5 +22,9 @@ namespace Astakona
         public bool UpdateInventory { get; set; }
         public bool DeleteInventory { get; set; }
         public bool UpdateDelivery { get; set; }
+        public bool UpdateMaterial { get; set; }
+        public bool AddReturnedOrder { get; set; }
+        public bool UpdateReturnedOrder { get; set; }
+        public bool DeleteReturnedOrder { get; set; }   
     }
 }

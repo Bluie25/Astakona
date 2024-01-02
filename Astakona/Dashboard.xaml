@@ -51,6 +51,7 @@
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
@@ -79,25 +80,31 @@
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="4" Background="#262f3c">
+            <Grid Grid.Row="4">
+                <Button Style="{StaticResource PanelButtonStyle}" Click="ReturnButtonClick">
+                    <TextBlock Text="Return" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
+                </Button>
+            </Grid>
+
+            <Grid Grid.Row="5" Background="#262f3c">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="MaterialButtonClick">
                     <TextBlock Text="Stock Material" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="5" Background="#262f3c">
+            <Grid Grid.Row="6" Background="#262f3c">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="PalletButtonClick">
                     <TextBlock Text="Stock Pallet" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="6" Background="#262f3c">
+            <Grid Grid.Row="7" Background="#262f3c">
                 <Button Style="{StaticResource PanelButtonStyle}" Click="AccountButtonClick">
                     <TextBlock Text="Account" FontSize="10" FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="8">
+            <Grid Grid.Row="9">
                 <Button  Style="{StaticResource PanelButtonStyle}" Click="LogoutButton_Click">
                     <TextBlock Text="Log Out" FontSize="10"  FontFamily="Helvetica" Margin="50 0 0 0"/>
                 </Button>

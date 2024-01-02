@@ -271,11 +271,18 @@
     <Compile Include="AddPallet.xaml.cs">
       <DependentUpon>AddPallet.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddReturnedOrder.xaml.cs">
+      <DependentUpon>AddReturnedOrder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DeliveryPage.xaml.cs">
       <DependentUpon>DeliveryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MaterialPage.xaml.cs">
       <DependentUpon>MaterialPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ReturnedOrdersDetails.cs" />
+    <Compile Include="OrderReturnPage.xaml.cs">
+      <DependentUpon>OrderReturnPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PalletDetails.cs" />
     <Compile Include="PalletPage.xaml.cs">
@@ -296,6 +303,9 @@
     <Compile Include="UpdateMaterial.xaml.cs">
       <DependentUpon>UpdateMaterial.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UpdateReturnedOrder.xaml.cs">
+      <DependentUpon>UpdateReturnedOrder.xaml</DependentUpon>
+    </Compile>
     <Page Include="AccountPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -305,6 +315,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddPallet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddReturnedOrder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -343,6 +357,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="OrderReturnPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PalletPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -364,6 +382,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UpdateMaterial.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdateReturnedOrder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
