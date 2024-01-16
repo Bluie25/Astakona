@@ -68,9 +68,9 @@ namespace Astakona
                                 };
 
                                 ((App)Application.Current).LoggedInUser = LoggedInUser;
-                                Dashboard Dashboard = new Dashboard();
+                                OrderPage OrderPage = new OrderPage();
                                 this.Close();
-                                Dashboard.Show();
+                                OrderPage.Show();
                             }
                             else
                                 MessageBox.Show("Login failed. Please check your credentials.");
