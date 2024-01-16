@@ -291,16 +291,19 @@ namespace Astakona
                                     SqlCommand DeleteReturnedOrderCommand = new SqlCommand($"DELETE FROM ReturnedOrders WHERE OrderID = {SelectedOrder.OrderID}", conn, transaction);
                                     DeleteReturnedOrderCommand.ExecuteNonQuery();
 
+                                    transaction.Commit();
+                                    conn.Close();
+
                                     await _hubConnection.InvokeAsync("SendDeliveriesPageUpdate");
                                     await _hubConnection.InvokeAsync("SendOrdersPageUpdate");
                                     await _hubConnection.InvokeAsync("SendOrdersReturnPageUpdate");
-                                    conn.Close();
+                                    
+                                    
                                 }
 
                                 catch (Exception ex)
                                 {
                                     MessageBox.Show($"Error deleting Order: {ex.Message}\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                                    Console.WriteLine($"{ex.Message}\n{ex.StackTrace}"); // 
                                     transaction.Rollback();
                                 }
                             }

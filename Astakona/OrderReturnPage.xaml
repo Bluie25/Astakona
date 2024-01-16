@@ -128,6 +128,8 @@
             </Border>
 
             <Grid Grid.Row="0">
+                <Label Content="Search:" FontSize="15" VerticalAlignment="Center" Margin="400 0 0 0"/>
+                <TextBox x:Name="SearchTextBox" Width="200" Height="25" TextChanged="SearchTextBox_TextChanged" Margin="0 0 100 0"/>
                 <CheckBox x:Name="OnGoingCB" IsChecked="True" VerticalAlignment="Center" Content="On-Going" Checked="CheckBox_Status" Unchecked="CheckBox_Status" Margin="700 0 0 0"/>
                 <CheckBox x:Name="CompletedCB" VerticalAlignment="Center" Content="Completed" Checked="CheckBox_Status" Unchecked="CheckBox_Status" Margin="800 0 0 0"/>
             </Grid>

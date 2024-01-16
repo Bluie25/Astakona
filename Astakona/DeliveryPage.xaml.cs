@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Data;
+using System.ComponentModel;
 
 namespace Astakona
 {
@@ -122,6 +123,27 @@ namespace Astakona
 
             if (_hubConnection != null)
                 await _hubConnection.InvokeAsync("SendDeliveriesPageUpdate");
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = SearchTextBox.Text.ToLower();
+
+            ICollectionView view = CollectionViewSource.GetDefaultView(Delivery);
+            view.Filter = item =>
+            {
+                OrdersDetails dataItem = item as OrdersDetails; // Replace YourDataType with the actual type of your data items
+
+                if (dataItem != null)
+                {
+                    return dataItem.InvoiceNo.ToLower().Contains(searchText)
+                        || dataItem.InventoryName.ToLower().Contains(searchText)
+                        || dataItem.Customer.ToLower().Contains(searchText)
+                        ;
+                }
+
+                return false;
+            };
         }
 
         private void UpdateDeliveryBtn_Loaded(object sender, RoutedEventArgs e)
