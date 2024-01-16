@@ -86,6 +86,7 @@ namespace Astakona
                     {
                         this.ReturnedOrders.Add(new ReturnedOrdersDetails()
                         {
+                            ReturnedOrderID = Convert.ToInt32(Reader["ReturnedOrderID"]),
                             OrderId = Convert.ToInt32(Reader["OrderID"]),
                             InvoiceNo = Convert.ToString(Reader["InvoiceNo"]),
                             InventoryName = Convert.ToString(Reader["InventoryName"]),
@@ -213,7 +214,7 @@ namespace Astakona
                             using (SqlConnection conn = new SqlConnection(this.connection))
                             {
                                 conn.Open();
-                                string query = $"DELETE FROM ReturnedOrders WHERE OrderID = {SelectedReturnedOrder.OrderId}";
+                                string query = $"DELETE FROM ReturnedOrders WHERE ReturnedOrderID = {SelectedReturnedOrder.ReturnedOrderID}";
 
                                 using (SqlCommand DeleteCommand = new SqlCommand(query, conn))
                                 {

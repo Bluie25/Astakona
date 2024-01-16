@@ -255,28 +255,33 @@ namespace Astakona
 
                     if (result == MessageBoxResult.Yes)
                     {
-                        try
+                        using (SqlConnection conn = new SqlConnection(this.connection))
                         {
-                            using (SqlConnection conn = new SqlConnection(this.connection))
+                            conn.Open();
+                            using (SqlTransaction transaction = conn.BeginTransaction())
                             {
-                                conn.Open();
-                                string query = $"DELETE FROM Orders WHERE OrderID = {SelectedOrder.OrderID}";
-
-                                using (SqlCommand DeleteCommand = new SqlCommand(query, conn))
+                                try
                                 {
-                                    DeleteCommand.ExecuteNonQuery();
+                                    SqlCommand DeleteOrderCommand = new SqlCommand($"DELETE FROM Orders WHERE OrderID = {SelectedOrder.OrderID}", conn, transaction);
+                                    DeleteOrderCommand.ExecuteNonQuery();
+
+                                    ////DELETE RETURNED ORDER DATAS IF HAVE
+                                    SqlCommand DeleteReturnedOrderCommand = new SqlCommand($"DELETE FROM ReturnedOrders WHERE OrderID = {SelectedOrder.OrderID}", conn, transaction);
+                                    DeleteReturnedOrderCommand.ExecuteNonQuery();
+
+                                    await _hubConnection.InvokeAsync("SendDeliveriesPageUpdate");
+                                    await _hubConnection.InvokeAsync("SendOrdersPageUpdate");
+                                    await _hubConnection.InvokeAsync("SendOrdersReturnPageUpdate");
+                                    conn.Close();
                                 }
 
-                                await _hubConnection.InvokeAsync("SendDeliveriesPageUpdate");
-                                await _hubConnection.InvokeAsync("SendOrdersPageUpdate");
-                                conn.Close();
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show($"Error deleting Order: {ex.Message}\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    transaction.Rollback();
+                                }
                             }
-                        }
-
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"Error deleting order: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                        } 
                     }
                 }
             }

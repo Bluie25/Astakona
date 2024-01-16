@@ -8,6 +8,7 @@ namespace Astakona
 {
     public class ReturnedOrdersDetails
     {
+        public int ReturnedOrderID { get; set; }
         public int OrderId { get; set; }
         public string InvoiceNo { get; set; }
         public string InventoryName { get; set; }

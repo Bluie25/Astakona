@@ -168,7 +168,7 @@ namespace Astakona
                                                                                                         "Triplek18mmUsed=@Triplek18mmUsed, " +
                                                                                                         "Triplek15mmUsed=@Triplek15mmUsed, " +
                                                                                                         "Triplek12mmUsed=@Triplek12mmUsed, " +
-                                                                                                        "IsFinished=@IsFinished WHERE OrderID=@OrderID", conn, transaction))
+                                                                                                        "IsFinished=@IsFinished WHERE ReturnedOrderID=@ReturnedOrderID", conn, transaction))
                                 {
                                     UpdateReturnedOrdersQuery.Parameters.Add("@ReturnedAmount", SqlDbType.Real).Value = Convert.ToDouble(ReturnedAmountTB.Text);
                                     UpdateReturnedOrdersQuery.Parameters.Add("@PalletFixed", SqlDbType.Real).Value = Convert.ToDouble(FixedPalletTB.Text);
@@ -177,7 +177,7 @@ namespace Astakona
                                     UpdateReturnedOrdersQuery.Parameters.Add("@Triplek18mmUsed", SqlDbType.Real).Value = Convert.ToDouble(Triplek18mmTB.Text);
                                     UpdateReturnedOrdersQuery.Parameters.Add("@Triplek15mmUsed", SqlDbType.Real).Value = Convert.ToDouble(Triplek15mmTB.Text);
                                     UpdateReturnedOrdersQuery.Parameters.Add("@Triplek12mmUsed", SqlDbType.Real).Value = Convert.ToDouble(Triplek12mmTB.Text);
-                                    UpdateReturnedOrdersQuery.Parameters.Add("@OrderID", SqlDbType.Int).Value = this.SelectedReturnedOrder.OrderId;
+                                    UpdateReturnedOrdersQuery.Parameters.Add("@ReturnedOrderID", SqlDbType.Int).Value = this.SelectedReturnedOrder.ReturnedOrderID;
                                     if (Convert.ToDouble(FixedPalletTB.Text) == Convert.ToDouble(ReturnedAmountTB.Text))
                                     {
                                         UpdateReturnedOrdersQuery.Parameters.Add("@IsFinished", SqlDbType.Bit).Value = 1;
