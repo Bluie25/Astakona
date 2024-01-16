@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System.Net;
 using System.Diagnostics;
 using System.Data;
+using System.ComponentModel;
 
 namespace Astakona
 {
@@ -50,7 +51,7 @@ namespace Astakona
         private async void InitializeSignalR()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://192.168.1.26:5210/Hubs")
+                .WithUrl("http://192.168.1.27:5210/Hubs")
                 .Build();
 
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
@@ -158,7 +159,28 @@ namespace Astakona
                 MessageBox.Show($"Error loading orders: {ex.Message}\n{ex.StackTrace}");
             }
         }
-        
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = SearchTextBox.Text.ToLower();
+
+            ICollectionView view = CollectionViewSource.GetDefaultView(Orders);
+            view.Filter = item =>
+            {
+                OrdersDetails dataItem = item as OrdersDetails; // Replace YourDataType with the actual type of your data items
+
+                if (dataItem != null)
+                {
+                    return dataItem.InvoiceNo.ToLower().Contains(searchText)
+                        || dataItem.InventoryName.ToLower().Contains(searchText)
+                        || dataItem.Customer.ToLower().Contains(searchText)
+                        ;
+                }
+
+                return false;
+            };
+        }
+
         private async void CheckBox_Status(object sender, RoutedEventArgs e)
         {
             if (CompletedCB != null && CompletedCB.IsChecked == true)
@@ -278,6 +300,7 @@ namespace Astakona
                                 catch (Exception ex)
                                 {
                                     MessageBox.Show($"Error deleting Order: {ex.Message}\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    Console.WriteLine($"{ex.Message}\n{ex.StackTrace}"); // 
                                     transaction.Rollback();
                                 }
                             }

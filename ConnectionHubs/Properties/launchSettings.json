@@ -3,12 +3,12 @@
     "ConnectionHubs": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://192.168.1.26:5210",
+      "launchUrl": "http://192.168.1.27:5210",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://192.168.1.26:5210"
+      "applicationUrl": "http://192.168.1.27:5210"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -22,7 +22,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://192.168.1.26:5210",
+      "applicationUrl": "http://192.168.1.27:5210",
       "sslPort": 44335
     }
   }

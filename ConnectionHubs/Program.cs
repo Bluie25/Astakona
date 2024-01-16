@@ -35,4 +35,4 @@ app.MapRazorPages();
 // Map SignalR hub
 app.MapHub<Hubs>("/Hubs");
 
-app.Run("http://192.168.1.26:5210");
+app.Run("http://192.168.1.27:5210");
