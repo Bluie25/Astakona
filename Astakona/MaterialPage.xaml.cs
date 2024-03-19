@@ -47,7 +47,7 @@ namespace Astakona
         private async void InitializeSignalR()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://192.168.1.27:5210/Hubs")
+                .WithUrl("INSERT LOCAL IP ADDRESS")
                 .Build();
 
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
